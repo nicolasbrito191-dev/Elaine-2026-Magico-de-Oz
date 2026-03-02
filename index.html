@@ -9,13 +9,12 @@
     <style>
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #f0f4f0; /* Tom verde menta bem claro */
+            background-color: #f0f4f0;
             color: #333;
             margin: 0;
             overflow-x: hidden;
         }
 
-        /* Menu de 3 linhas */
         .menu-btn {
             position: fixed;
             top: 20px;
@@ -63,7 +62,6 @@
             backdrop-filter: blur(4px);
         }
 
-        /* Seletor de Turma Inicial */
         #class-selector {
             position: fixed;
             top: 0;
@@ -88,7 +86,6 @@
         }
         .class-circle:hover { transform: scale(1.1) translateY(-5px); background: #7aa371; }
 
-        /* Banner */
         .banner {
             position: relative; height: 300px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -103,9 +100,8 @@
         }
         .banner h1 { font-family: 'Cherry Bomb One', cursive; font-size: 3.5rem; text-shadow: 2px 4px 10px rgba(0,0,0,0.3); }
 
-        /* Estante Estilo Organizador Infantil */
         .library-container {
-            max-width: 1000px; margin: 0 auto 60px auto; padding: 20px;
+            max-width: 1100px; margin: 0 auto 60px auto; padding: 20px;
             background: white;
             border-radius: 40px 40px 0 0;
             box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
@@ -119,7 +115,7 @@
         }
 
         .shelf-row {
-            background: #e0e7e0; /* Fundo da prateleira */
+            background: #e0e7e0;
             border-radius: 15px;
             margin-bottom: 40px;
             padding: 30px 20px 15px 20px;
@@ -128,17 +124,15 @@
             gap: 25px;
             flex-wrap: wrap;
             position: relative;
-            /* O "degrau" da prateleira */
             border-bottom: 15px solid #d4ddd4;
         }
 
-        /* O Livro Aberto (Capa Frontal) */
         .book-container {
             width: 140px;
             perspective: 1000px;
             cursor: pointer;
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .book-cover {
@@ -156,7 +150,6 @@
             border: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* Páginas simuladas atrás da capa */
         .book-pages {
             position: absolute;
             top: 5px;
@@ -174,21 +167,25 @@
             box-shadow: 15px 10px 30px rgba(0,0,0,0.2);
         }
 
-        /* Nome do Aluno estilo etiqueta */
         .student-label {
             margin-top: 12px;
             background: #fff;
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 0.65rem;
             font-weight: bold;
-            color: #7aa371;
+            color: #5b7c53;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             display: block;
+            text-transform: uppercase;
+            line-height: 1.2;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Viewer */
         #viewer-section {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255,255,255,0.95); z-index: 3000; justify-content: center; align-items: center;
@@ -201,7 +198,6 @@
             border: 8px solid white;
         }
 
-        /* Footer */
         footer {
             background: white;
             border-top: 2px solid #f0f4f0;
@@ -210,7 +206,6 @@
 </head>
 <body class="overflow-hidden">
 
-    <!-- Menu Hambúrguer -->
     <div class="menu-btn" onclick="toggleMenu()">
         <div></div><div></div><div></div>
     </div>
@@ -227,7 +222,6 @@
         </ul>
     </div>
 
-    <!-- Seletor de Turma -->
     <div id="class-selector">
         <div class="text-center">
             <h2 class="font-bold text-4xl mb-12 text-green-900" style="font-family: 'Cherry Bomb One'">Escolha a Turma</h2>
@@ -248,9 +242,7 @@
     </header>
 
     <main class="library-container">
-        <div class="shelf-unit" id="shelf-manager">
-            <!-- As estantes face-out serão geradas via JS -->
-        </div>
+        <div class="shelf-unit" id="shelf-manager"></div>
     </main>
 
     <section id="viewer-section">
@@ -265,50 +257,83 @@
 
     <footer class="text-center py-10 text-gray-400 font-bold">
         <p>Projeto de Leitura - Profª Elaine • 2026</p>
-        <div class="flex justify-center gap-4 mt-4 opacity-30">
-            <div class="w-8 h-8 rounded-full bg-green-200"></div>
-            <div class="w-8 h-8 rounded-full bg-yellow-200"></div>
-            <div class="w-8 h-8 rounded-full bg-blue-200"></div>
-        </div>
     </footer>
 
     <script>
-        // Link da imagem de capa que você enviou (convertido para link direto se necessário)
         const ozCover = 'https://lh3.googleusercontent.com/d/1nEdtoMa2uNyQ7cxL6R21oySfKWBuRqQJ';
-
-        const booksData = [
-            { id: '1CIa7AGwfkMk1lJO6pRGB5vRiRgi81gb8' },
-            { id: '1Yzl6id0zIhUVROSxGOWkBKwE2yaZq-B0' },
-            { id: '16emG3qFuxazoi5yuFoVUIy8LSmm5Re3e' },
-            { id: '1h31wSTwJf_8VzhuarZbPpX3Y5Xvolduz' },
-            { id: '1gmoAH6yxT-333xL4CJJDm9l-0ClGszAa' }
+        
+        // IDs fictícios para exemplo (como o usuário não proveu IDs novos, usarei o pool existente)
+        const filePool = [
+            '1CIa7AGwfkMk1lJO6pRGB5vRiRgi81gb8', '1Yzl6id0zIhUVROSxGOWkBKwE2yaZq-B0',
+            '16emG3qFuxazoi5yuFoVUIy8LSmm5Re3e', '1h31wSTwJf_8VzhuarZbPpX3Y5Xvolduz',
+            '1gmoAH6yxT-333xL4CJJDm9l-0ClGszAa'
         ];
 
-        function initLibrary() {
+        const studentsByClass = {
+            '5ºA': [
+                "ALÍCIA CALIXTO FALQUEIRO", "ANGELO BRUGINSKI SCUDERI", "ARTHUR KENJI NAKAGAWA",
+                "BERNARDO CHRISTIAN RIBEIRO FREIRE", "CAROLINA DE QUEIROZ MOREIRA", "CECÍLIA LEONEL NALESSO",
+                "DANIEL SALVARANI GUARINHO", "EDUARDO FANTAZZINI GRANDISOLI", "EMI SAKIHAMA",
+                "FERNANDA AKARI KIMURA", "GAEL FARHA CONDE", "GUSTAVO DE SOUZA SAMPAIO",
+                "GUSTAVO SILVA E SOUZA", "HELENA HERINGER ROCHA SAD", "HELOISA ROSA DE SOUZA BARRETO",
+                "JÚLIA ROSÁTI SILVA", "LORENA DE CARVALHO SALLES", "LORENZO AMARAL FURIGO CARDOSO",
+                "LUCAS CASTELLI ALBUQUERQUE", "LUCAS OLIVEIRA MAIA", "LUCAS TADEU MUNIZ DA SILVA",
+                "LUIZA BELLOTTO BARRETTO", "MARINA SARTORETO FERNANDES", "PEDRO RIBEIRO DE OLIVEIRA",
+                "RAFAEL WATANABE SOUZA BARBIERI", "RAFAELLA MUOIO POLIDO", "THEO BRITO SEGAMARCHI"
+            ],
+            '5ºB': [
+                "ALICE BELLUCCI ASCENCIO", "ALICE DE FREITAS OLHIER", "ANTONELLA JULIO VETTORAZZO CHIESA REY",
+                "ARTHUR CORDEIRO PIZA", "BERNARDO VENTURA SÃO PIETRO", "CAROLINA SAES RUIZ",
+                "CATARINA MARQUES RAMOS", "CECÍLIA ZAN BARROSO", "EDUARDO FRANCO TOLEDO PINTO",
+                "ENZO ANDRADE ALVES", "FELIPE GUIMARÃES DE SOUZA", "GABRIEL YUZUI VICECONTI",
+                "GIOVANI DIEZEL MUNHOZ", "GIULIA REZENDE PASSOS", "ISABELA AGOSTINELI TRIDAPALLI",
+                "ISABELLA BOAVENTURA GOMES DA SILVA OLIVEIRA", "LARISSA DAMASCENO BRUDER SANTINI",
+                "LÍVIA MASCARENHAS BEDULLI", "LORENZO ATTIÊ BRUNI", "LUCAS BERNARDO MATUTINO DE OLIVEIRA",
+                "MARCELLA TARABORELLI LIMONGELLI", "MARCELO SOUZA VARCA", "MARCUS MIGUEL CORDEIRO DE MORAES",
+                "MARIA EDUARDA LEMOS LIMA", "MARIAH ANTONELLA MACIEL MAESTÁ", "MATEUS CARVALHO MADEIRA",
+                "MATHEUS DA SILVA VACCARO", "PEDRO CAMPOS VIZCARRA ZUNIGA"
+            ],
+            '5ºC': [
+                "ALICE VIEIRA ESTEVES", "BEATRIZ PAZINI SOARES", "BERNARDO MICHELETTI FRANCISCO",
+                "CECÍLIA SALCEDO FERNANDES", "CLARA COSTA RIBAS FRAMIL SANCHES", "DAVI CARVALHO DE VASCONCELOS",
+                "ENRICO FESTINO MARTORELLI", "GABRIEL MAMEDE DE ALMEIDA FERREIRA", "GABRIEL RIBEIRO DA SILVA",
+                "GIOVANNA DA SILVA PRESTES", "GIOVANNA LA TORRE MARTINS", "GIULIA VIEIRA SACCOMANO",
+                "JOÃO LUCCA SANTI SILVA", "JOSÉ FORTE PESSOA JUNIOR", "LAURA AGRA DE MORAES",
+                "LEONARDO DA SILVA CORRÊA", "LORENA MIDLEY PAULETTI", "LUIZA HIGUCHI ROSA",
+                "MARI UEDA POSSATO VENANCIO", "MARIA FERNANDA RUIVO ALBIERO", "MARIA LÚCIA LODI PALHARES",
+                "MATHEUS BORGES GARRIDO", "MATHEUS CARDOSO LICHMANN", "PEDRO DOS SANTOS FREITAS",
+                "RAFAEL DE BARROS VICENTIN", "RAFAELA RAMALHO GUIRELI", "STELLA HOFFMANN FOGAÇA",
+                "VALENTINA PALEARI CASSIMIRO", "VÍTOR HENRIQUE MARTINS DE PAULO"
+            ]
+        };
+
+        function initLibrary(className) {
             const container = document.getElementById('shelf-manager');
             container.innerHTML = '';
             
-            // Criaremos 4 grandes prateleiras estilo display
-            for (let i = 0; i < 4; i++) {
+            const students = studentsByClass[className] || [];
+            const booksPerRow = 5;
+            const rowsCount = Math.ceil(students.length / booksPerRow);
+
+            for (let i = 0; i < rowsCount; i++) {
                 const shelf = document.createElement('div');
                 shelf.className = 'shelf-row';
                 
-                // 7 ou 8 livros por prateleira para preencher bem
-                for (let j = 0; j < 8; j++) {
-                    const studentIndex = (i * 8) + j + 1;
-                    // Limita a 30 alunos (ajuste se necessário)
-                    if (studentIndex > 30) break;
+                for (let j = 0; j < booksPerRow; j++) {
+                    const studentIndex = (i * booksPerRow) + j;
+                    if (studentIndex >= students.length) break;
 
-                    const bookInfo = booksData[j % booksData.length];
+                    const studentName = students[studentIndex];
+                    const fileId = filePool[studentIndex % filePool.length];
                     
                     const bookContainer = document.createElement('div');
                     bookContainer.className = 'book-container';
-                    bookContainer.onclick = () => openViewer(`Obra de Aluno ${studentIndex}`, bookInfo.id);
+                    bookContainer.onclick = () => openViewer(`Obra de ${studentName}`, fileId);
                     
                     bookContainer.innerHTML = `
                         <div class="book-pages"></div>
                         <div class="book-cover" style="background-image: url('${ozCover}')"></div>
-                        <span class="student-label">Aluno ${studentIndex}</span>
+                        <span class="student-label">${studentName}</span>
                     `;
                     shelf.appendChild(bookContainer);
                 }
@@ -339,7 +364,7 @@
                 selector.style.display = 'none';
                 document.body.classList.remove('overflow-hidden');
             }, 500);
-            initLibrary();
+            initLibrary(className);
         }
 
         function openViewer(title, fileId) {
@@ -360,8 +385,6 @@
         window.onload = () => {
             document.body.classList.add('overflow-hidden');
         };
-
-        initLibrary();
     </script>
 </body>
 </html>
