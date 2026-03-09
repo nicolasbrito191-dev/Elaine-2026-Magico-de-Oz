@@ -166,13 +166,6 @@
 
         .work-image { width: 100%; max-height: 85%; object-fit: contain; border: 12px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
 
-        .audio-player-box {
-            margin-top: 30px; background: #5d4037; color: white; padding: 18px 36px;
-            border-radius: 60px; cursor: pointer; display: flex; align-items: center; gap: 12px;
-            transition: 0.3s; font-weight: bold;
-        }
-        .audio-player-box:hover { background: #795548; transform: scale(1.05); }
-
         .close-btn {
             position: fixed; top: 35px; right: 35px; color: white; font-size: 2rem;
             cursor: pointer; z-index: 10000; background: rgba(255,255,255,0.12); width: 65px; height: 65px;
@@ -238,11 +231,6 @@
                     <h2 id="inner-student-name" class="text-3xl font-bold text-amber-900 mb-2 text-center" style="font-family: 'Playfair Display'"></h2>
                     <div class="w-16 h-1.5 bg-amber-400 mb-8 rounded-full"></div>
                     <p class="single-line-quote text-amber-800 italic text-md mb-8">"Não há lugar como o nosso lar."</p>
-                    <div class="audio-player-box" id="audio-trigger">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        Ouvir Gravação
-                    </div>
-                    <audio id="student-audio" crossorigin="anonymous"></audio>
                 </div>
                 <div class="page-base page-right">
                     <img id="work-img" src="" class="work-image" alt="Trabalho">
@@ -275,34 +263,12 @@
     <script>
         const ozCover = 'https://lh3.googleusercontent.com/d/1nEdtoMa2uNyQ7cxL6R21oySfKWBuRqQJ';
         
-        /**
-         * Converte links de visualização do Google Drive em links de stream direto.
-         * O formato ideal para a tag <audio> é 'docs.google.com/uc?export=download&id='
-         */
-        function getDirectAudioUrl(input) {
-            if (!input) return "";
-            
-            // Se for apenas o ID (ex: "1IGm...")
-            let id = input;
-            
-            // Se for um link completo, extrai o ID
-            if (input.includes("drive.google.com")) {
-                const match = input.match(/\/d\/([a-zA-Z0-9_-]+)/) || input.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-                if (match && match[1]) id = match[1];
-            }
-            
-            // Retorna o formato universal de stream do Drive
-            return `https://docs.google.com/uc?export=download&id=${id}`;
-        }
-
         const mediaConfig = {
             "ALÍCIA CALIXTO FALQUEIRO": {
-                work: "https://lh3.googleusercontent.com/d/19J-aT4ekQ9btD-mcWC7SBWGzY6ioe927",
-                audio: getDirectAudioUrl("1IGmY5kvVT54r7dx28D1rac3r8RZned05")
+                work: "https://lh3.googleusercontent.com/d/19J-aT4ekQ9btD-mcWC7SBWGzY6ioe927"
             },
             "ANGELO BRUGINSKI SCUDERI": {
-                work: ozCover,
-                audio: getDirectAudioUrl("1lJPQTCanurg8Fa-4ULkvkSSbgx8b3Mav")
+                work: ozCover
             }
         };
         
@@ -370,7 +336,6 @@
         function openModal(name) {
             const modal = document.getElementById('book-modal');
             const book = document.getElementById('book-element');
-            const audio = document.getElementById('student-audio');
             const img = document.getElementById('work-img');
             
             document.getElementById('cover-name-text').innerText = name;
@@ -379,17 +344,6 @@
             const config = mediaConfig[name];
             img.src = config ? config.work : ozCover;
             
-            // Limpa o estado do áudio anterior
-            audio.pause();
-            audio.removeAttribute('src');
-            audio.load();
-
-            if (config && config.audio) {
-                // Atribui a nova URL de stream direto
-                audio.src = config.audio;
-                audio.load();
-            }
-
             modal.style.display = 'flex';
             book.classList.remove('open');
             book.style.transform = "rotateX(5deg)";
@@ -405,33 +359,10 @@
 
         function closeBook() {
             const book = document.getElementById('book-element');
-            const audio = document.getElementById('student-audio');
-            audio.pause();
-            audio.currentTime = 0;
             book.classList.remove('open');
             book.style.transform = "rotateX(5deg)";
             setTimeout(() => { document.getElementById('book-modal').style.display = 'none'; }, 850);
         }
-
-        document.getElementById('audio-trigger').onclick = (e) => {
-            e.stopPropagation();
-            const audio = document.getElementById('student-audio');
-            
-            if (audio.src && audio.src !== window.location.href) {
-                if (audio.paused) {
-                    audio.play().catch(err => {
-                        console.error("Erro ao reproduzir:", err);
-                        // Tenta recarregar uma vez em caso de erro de rede
-                        audio.load();
-                        audio.play().catch(e => console.log("Falha persistente na reprodução."));
-                    });
-                } else {
-                    audio.pause();
-                }
-            } else {
-                console.warn("Nenhuma fonte de áudio válida disponível para este aluno.");
-            }
-        };
     </script>
 </body>
 </html>
