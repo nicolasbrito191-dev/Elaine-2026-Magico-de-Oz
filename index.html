@@ -13,6 +13,9 @@
             color: #333;
             margin: 0;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Seletor de Turma Inicial */
@@ -56,7 +59,7 @@
         }
         .sidebar-item:hover { background: rgba(212, 175, 55, 0.1); border-color: #d4af37; color: #d4af37; }
 
-        /* Menu Icon (3 Barrinhas) */
+        /* Menu Icon */
         .menu-icon {
             position: fixed; top: 25px; left: 25px; z-index: 4500;
             cursor: pointer; background: rgba(0,0,0,0.5); padding: 12px;
@@ -65,142 +68,165 @@
         }
         .menu-icon:hover { background: #d4af37; border-color: #fff; }
 
-        /* Estante Estilizada */
-        .library-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; opacity: 0; transition: 0.8s; }
+        /* ESTANTE AMPLIADA HORIZONTALMENTE */
+        .library-wrapper { 
+            max-width: 1400px; /* Aumentado de 1100px para 1400px */
+            margin: 40px auto; 
+            padding: 0 40px; 
+            opacity: 0; 
+            transition: 0.8s; 
+            flex-grow: 1; 
+        }
         .library-wrapper.visible { opacity: 1; }
         
         .bookcase { 
             background-color: #3e2723;
             background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); 
-            border: 20px solid #2d1b18; 
-            border-top-width: 35px; border-bottom-width: 45px; border-radius: 8px; 
-            box-shadow: 0 50px 100px rgba(0,0,0,0.7), inset 0 0 100px rgba(0,0,0,0.6);
-            position: relative; overflow: hidden;
+            border: 22px solid #2d1b18; 
+            border-radius: 8px; 
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 0 150px rgba(0,0,0,0.5);
         }
 
         .shelf-row {
+            padding: 60px 60px 100px 60px; /* Padding aumentado para melhor respiro */
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 50px 40px; /* Gap aumentado entre os livros */
+            border-bottom: 35px solid #2d1b18; 
+            position: relative;
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
             background-color: #4e342e;
-            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'); 
-            padding: 50px 30px 95px 30px; display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 40px;
-            border-bottom: 28px solid #2d1b18; position: relative;
-            box-shadow: inset 0 -20px 40px rgba(0,0,0,0.5), inset 0 20px 40px rgba(0,0,0,0.3);
         }
 
-        /* Livros na Estante */
-        .book-item { width: 115px; height: 165px; position: relative; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .book-item:hover { transform: scale(1.1) translateY(-12px); z-index: 50; }
+        /* Sombra de profundidade da prateleira */
+        .shelf-row::after {
+            content: '';
+            position: absolute;
+            bottom: -35px;
+            left: 0;
+            right: 0;
+            height: 18px;
+            background: rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+
+        /* Livros ajustados */
+        .book-item { width: 130px; height: 190px; position: relative; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0 auto; }
+        .book-item:hover { transform: translateY(-25px) scale(1.1); z-index: 50; }
         
         .book-cover-small {
-            width: 100%; height: 100%; border-radius: 2px 7px 7px 2px;
-            box-shadow: 8px 12px 25px rgba(0,0,0,0.6);
-            position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 12px; text-align: center; border-left: 5px solid #4a0e0e; overflow: hidden;
-            background-image: linear-gradient(rgba(127, 29, 29, 0.88), rgba(90, 18, 18, 0.88)), url('https://lh3.googleusercontent.com/d/1nEdtoMa2uNyQ7cxL6R21oySfKWBuRqQJ');
+            width: 100%; height: 100%; border-radius: 2px 6px 6px 2px;
+            box-shadow: 15px 15px 30px rgba(0,0,0,0.7);
+            position: relative; display: flex; align-items: center; justify-content: center;
+            padding: 15px; text-align: center; border-left: 7px solid #4a0e0e; overflow: hidden;
+            background-image: linear-gradient(rgba(127, 29, 29, 0.85), rgba(90, 18, 18, 0.85)), url('https://lh3.googleusercontent.com/d/1nEdtoMa2uNyQ7cxL6R21oySfKWBuRqQJ');
             background-size: cover; background-position: center;
         }
 
         .small-name-gold {
-            color: #f3e5ab; font-family: 'Playfair Display', serif; font-size: 0.62rem;
-            font-weight: bold; line-height: 1.2; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            color: #f3e5ab; font-family: 'Playfair Display', serif; font-size: 0.7rem;
+            font-weight: bold; line-height: 1.4; text-shadow: 1px 1px 4px rgba(0,0,0,1);
         }
 
         .student-name-tag {
-            position: absolute; bottom: -65px; left: 50%; transform: translateX(-50%);
-            width: 150%; font-size: 0.72rem; font-weight: bold; color: #fff;
+            position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%);
+            width: 160px; font-size: 0.75rem; font-weight: bold; color: #fff;
             text-align: center; text-transform: uppercase; text-shadow: 2px 2px 4px #000;
-            background: rgba(0,0,0,0.4); padding: 5px; border-radius: 4px;
+            background: rgba(0, 0, 0, 0.65); padding: 7px 5px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
-        /* --- LIVRO 3D MODAL --- */
+        /* MODAL E LIVRO 3D */
         #book-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.96); z-index: 9999; display: none;
+            background: rgba(0,0,0,0.95); z-index: 9999; display: none;
             justify-content: center; align-items: center; perspective: 2000px;
-            backdrop-filter: blur(18px);
+            backdrop-filter: blur(10px);
         }
 
         .book-container {
-            width: 420px; height: 600px; position: relative; transform-style: preserve-3d;
-            transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer;
+            width: 400px; height: 550px; position: relative; transform-style: preserve-3d;
+            transition: transform 0.8s ease; cursor: pointer;
         }
 
-        /* Capa Frontal */
         .cover-main {
-            position: absolute; width: 420px; height: 100%; left: 0; top: 0;
+            position: absolute; width: 100%; height: 100%; left: 0; top: 0;
             background: linear-gradient(135deg, #8b0000 0%, #5a1212 100%) !important;
             z-index: 100; transform-origin: left; border-radius: 0 10px 10px 0;
-            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.5s;
-            border-left: 18px solid #4a0e0e; padding: 45px; text-align: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            backface-visibility: hidden;
+            transition: transform 1s ease, opacity 0.5s;
+            border-left: 15px solid #4a0e0e; padding: 40px; text-align: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            backface-visibility: hidden; box-shadow: 20px 0 50px rgba(0,0,0,0.5);
         }
         
-        .book-container.open .cover-main { 
-            transform: rotateY(-160deg); 
-            opacity: 0;
-            pointer-events: none;
-        }
+        .book-container.open .cover-main { transform: rotateY(-160deg); opacity: 0; pointer-events: none; }
 
-        /* Páginas Internas */
         .book-inner-pages {
-            position: absolute; width: 840px; height: 100%; 
+            position: absolute; width: 800px; height: 100%; 
             left: 50%; top: 0; transform: translateX(-50%);
-            display: flex; opacity: 0; transition: opacity 0.6s ease, transform 0.8s;
-            z-index: 50; pointer-events: none; transform-style: preserve-3d;
+            display: flex; opacity: 0; transition: 0.6s ease;
+            z-index: 50; pointer-events: none;
         }
         
-        .book-container.open .book-inner-pages { 
-            opacity: 1; 
-            transition-delay: 0.3s; 
-            pointer-events: auto; 
-        }
+        .book-container.open .book-inner-pages { opacity: 1; transition-delay: 0.3s; pointer-events: auto; }
 
         .page-base {
-            width: 420px; height: 100%; background: #fdfaf3; padding: 45px;
+            width: 400px; height: 100%; background: #fdfaf3; padding: 30px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.1);
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.1);
         }
-        .page-left { border-radius: 8px 0 0 8px; background: linear-gradient(to right, #e8dfcc, #fdfaf3 15%); border-right: 1px solid rgba(0,0,0,0.1); }
-        .page-right { border-radius: 0 8px 8px 0; background: linear-gradient(to left, #e8dfcc, #fdfaf3 15%); }
+        .page-left { border-radius: 5px 0 0 5px; background: linear-gradient(to right, #e8dfcc, #fdfaf3 10%); border-right: 1px solid rgba(0,0,0,0.1); }
+        .page-right { border-radius: 0 5px 5px 0; background: linear-gradient(to left, #e8dfcc, #fdfaf3 10%); }
 
-        .work-image { width: 100%; max-height: 85%; object-fit: contain; border: 12px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+        .work-image { width: 100%; max-height: 80%; object-fit: contain; border: 10px solid white; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
 
         .close-btn {
-            position: fixed; top: 35px; right: 35px; color: white; font-size: 2rem;
-            cursor: pointer; z-index: 10000; background: rgba(255,255,255,0.12); width: 65px; height: 65px;
+            position: fixed; top: 30px; right: 30px; color: white; font-size: 1.5rem;
+            cursor: pointer; z-index: 10000; background: rgba(255,255,255,0.1); width: 50px; height: 50px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             transition: 0.3s;
         }
-        .close-btn:hover { background: rgba(255,255,255,0.25); transform: rotate(90deg); }
+        .close-btn:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
 
-        .cover-icon {
-            width: 80px;
-            height: auto;
+        /* Rodapé Reconfigurado */
+        footer {
+            background-color: #2d1b18;
+            color: #d4af37;
+            padding: 50px 20px;
+            border-top: 10px solid #3e2723;
             margin-top: auto;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            font-family: 'Quicksand', sans-serif;
         }
-
-        .single-line-quote {
-            white-space: nowrap;
-            width: 100%;
-            text-align: center;
-            overflow: visible;
+        .footer-content {
+            max-width: 1200px; /* Acompanhando a largura maior */
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
+        .footer-logo {
+            width: 110px;
+            height: auto;
+            filter: brightness(0) invert(1);
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+        .footer-logo:hover { opacity: 0.8; }
 
         @media (max-width: 900px) {
-            .book-container { width: 320px; height: 480px; }
-            .book-inner-pages { width: 640px; }
-            .page-base { width: 320px; padding: 25px; }
-            .single-line-quote { font-size: 0.85rem; }
-            .cover-icon { width: 60px; }
-            .cover-main { width: 320px; }
+            .book-container { width: 300px; height: 420px; }
+            .book-inner-pages { width: 600px; }
+            .page-base { width: 300px; }
+            .shelf-row { grid-template-columns: repeat(3, 1fr); padding: 30px 15px 70px 15px; }
+            .footer-content { flex-direction: column; gap: 20px; text-align: center; }
+            .library-wrapper { padding: 0 10px; }
         }
     </style>
 </head>
 <body class="overflow-hidden">
 
+    <!-- Menu Lateral -->
     <div id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div id="sidebar">
         <h2 class="text-2xl font-bold mb-8 border-b border-amber-500/30 pb-4" style="font-family: 'Cherry Bomb One'">Trocar Turma</h2>
@@ -216,21 +242,22 @@
         </svg>
     </div>
 
+    <!-- Modal do Livro -->
     <div id="book-modal">
         <div class="close-btn" onclick="closeBook()">✕</div>
         <div class="book-container" id="book-element" onclick="toggleBookOpen(event)">
             <div class="cover-main" id="modal-cover-front">
-                <div class="main-title-gold text-[#d4af37] text-xl tracking-[5px] mb-8" style="font-family: 'Cinzel'">MÁGICO DE OZ</div>
-                <div id="cover-name-text" class="main-name-gold text-[#f3e5ab] text-4xl font-bold" style="font-family: 'Playfair Display'"></div>
-                <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="cover-icon" alt="Ícone Poema">
-                <div class="click-hint mb-4 text-[#d4af37] animate-pulse">Clique para abrir</div>
+                <div class="main-title-gold text-[#d4af37] text-lg tracking-[4px]" style="font-family: 'Cinzel'">MÁGICO DE OZ</div>
+                <div id="cover-name-text" class="main-name-gold text-[#f3e5ab] text-3xl font-bold" style="font-family: 'Playfair Display'"></div>
+                <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="w-16 h-auto mb-4 filter brightness-0 invert" alt="Logo">
+                <div class="text-[#d4af37] text-xs animate-pulse">Clique para folhear</div>
             </div>
 
             <div class="book-inner-pages" id="inner-pages">
                 <div class="page-base page-left">
-                    <h2 id="inner-student-name" class="text-3xl font-bold text-amber-900 mb-2 text-center" style="font-family: 'Playfair Display'"></h2>
-                    <div class="w-16 h-1.5 bg-amber-400 mb-8 rounded-full"></div>
-                    <p class="single-line-quote text-amber-800 italic text-md mb-8">"Não há lugar como o nosso lar."</p>
+                    <h2 id="inner-student-name" class="text-2xl font-bold text-amber-900 mb-2 text-center" style="font-family: 'Playfair Display'"></h2>
+                    <div class="w-12 h-1 bg-amber-400 mb-6 rounded-full"></div>
+                    <p class="text-amber-800 italic text-sm text-center">"Não há lugar como o nosso lar."</p>
                 </div>
                 <div class="page-base page-right">
                     <img id="work-img" src="" class="work-image" alt="Trabalho">
@@ -239,6 +266,7 @@
         </div>
     </div>
 
+    <!-- Seleção Inicial -->
     <div id="class-selector">
         <div class="text-center">
             <h1 class="text-white text-5xl font-bold mb-12" style="font-family: 'Cherry Bomb One';">Selecione a Turma</h1>
@@ -250,26 +278,47 @@
         </div>
     </div>
 
-    <header class="banner h-[260px] bg-amber-900 flex flex-col items-center justify-center text-white relative shadow-xl border-b-8 border-[#2d1b18]">
-        <div class="absolute inset-0 opacity-45 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/d/1hm2VI0Mr65rQhvowKYC2jcFE3-KR5EoF')"></div>
-        <h1 class="text-6xl font-bold relative z-10" style="font-family: 'Cherry Bomb One'; text-shadow: 5px 5px 0px #3e2723;">Estante Virtual</h1>
-        <p class="relative z-10 mt-4 bg-amber-800/85 border border-amber-600/50 px-10 py-3 rounded-full text-md font-bold tracking-widest uppercase shadow-lg">Mágico de Oz • Unidade Campolim • <span id="current-class-label"></span></p>
+    <!-- Banner Superior -->
+    <header class="banner h-[280px] bg-amber-900 text-white relative shadow-xl border-b-8 border-[#2d1b18] flex items-center px-12 overflow-hidden">
+        <div class="absolute inset-0 opacity-40 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/d/1hm2VI0Mr65rQhvowKYC2jcFE3-KR5EoF')"></div>
+        
+        <div class="relative z-10 w-full flex items-center justify-between max-w-7xl mx-auto">
+            <div class="flex items-center gap-8">
+                <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="w-24 h-auto filter brightness-0 invert" alt="Logo Colégio Banner">
+                <div>
+                    <h1 class="text-6xl font-bold" style="font-family: 'Cherry Bomb One'; text-shadow: 4px 4px 0px #3e2723;">Estante Virtual</h1>
+                    <p class="mt-2 bg-amber-800/90 border border-amber-600/50 px-6 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase inline-block">Mágico de Oz • Campolim • <span id="current-class-label"></span></p>
+                </div>
+            </div>
+        </div>
     </header>
 
+    <!-- Área da Estante -->
     <div class="library-wrapper" id="lib-view">
         <div class="bookcase" id="shelf-container"></div>
     </div>
 
+    <!-- Rodapé Reajustado -->
+    <footer>
+        <div class="footer-content">
+            <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="footer-logo" alt="Logo Colégio Rodapé">
+            
+            <div class="text-right">
+                <p class="text-lg font-bold uppercase tracking-[3px]" style="font-family: 'Cinzel'">Colégio Ser</p>
+                <p class="text-[10px] opacity-60 uppercase tracking-widest mb-2">Unidade Campolim</p>
+                <div class="w-12 h-0.5 bg-amber-600 ml-auto mb-2"></div>
+                <p class="text-xs">Estante Virtual 5º Ano • <span id="footer-date"></span></p>
+            </div>
+        </div>
+    </footer>
+
     <script>
         const ozCover = 'https://lh3.googleusercontent.com/d/1nEdtoMa2uNyQ7cxL6R21oySfKWBuRqQJ';
-        
+        document.getElementById('footer-date').innerText = new Date().getFullYear();
+
         const mediaConfig = {
-            "ALÍCIA CALIXTO FALQUEIRO": {
-                work: "https://lh3.googleusercontent.com/d/19J-aT4ekQ9btD-mcWC7SBWGzY6ioe927"
-            },
-            "ANGELO BRUGINSKI SCUDERI": {
-                work: ozCover
-            }
+            "ALÍCIA CALIXTO FALQUEIRO": { work: "https://lh3.googleusercontent.com/d/19J-aT4ekQ9btD-mcWC7SBWGzY6ioe927" },
+            "ANGELO BRUGINSKI SCUDERI": { work: ozCover }
         };
         
         const studentsData = {
@@ -314,7 +363,7 @@
             const container = document.getElementById('shelf-container');
             container.innerHTML = '';
             const students = studentsData[className];
-            const perRow = 5;
+            const perRow = 5; 
             
             for(let i=0; i < students.length; i+=perRow) {
                 const row = document.createElement('div');
@@ -325,7 +374,7 @@
                     item.onclick = () => openModal(name);
                     item.innerHTML = `
                         <div class="book-cover-small"><div class="small-name-gold">${name}</div></div>
-                        <div class="student-name-tag">${name}</div>
+                        <div class="student-name-tag" title="${name}">${name}</div>
                     `;
                     row.appendChild(item);
                 });
