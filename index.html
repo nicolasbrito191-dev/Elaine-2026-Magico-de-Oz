@@ -5,419 +5,362 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto de Leitura: Mágico de Oz</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Cherry+Bomb+One&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Cherry+Bomb+One&family=Playfair+Display:wght@700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #f7f3ed;
+            background-color: #eaddca;
             color: #333;
             margin: 0;
             overflow-x: hidden;
         }
 
-        /* Menu Lateral */
-        .menu-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 2500;
-            cursor: pointer;
-            background: #5d4037;
-            padding: 10px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border: 2px solid #8d6e63;
-        }
-        .menu-btn div { width: 25px; height: 3px; background: white; border-radius: 2px; }
-
-        #unit-menu {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 300px;
-            height: 100%;
-            background: #fff;
-            z-index: 2600;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 80px 20px;
-            box-shadow: 5px 0 25px rgba(0,0,0,0.1);
-        }
-        #unit-menu.active { left: 0; }
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.4);
-            display: none;
-            z-index: 2550;
-            backdrop-filter: blur(4px);
-        }
-
         /* Seletor de Turma Inicial */
         #class-selector {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(26, 18, 14, 1);
-            z-index: 4000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(15px);
-            transition: opacity 0.6s ease;
-        }
-
-        .class-book-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 25px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a120e; z-index: 4000; display: flex;
+            justify-content: center; align-items: center; transition: opacity 0.6s ease;
         }
 
         .red-book-custom {
-            width: 160px;
-            height: 230px;
+            width: 150px; height: 210px;
             background: linear-gradient(135deg, #a52a2a 0%, #7f1d1d 100%);
-            border-radius: 4px 12px 12px 4px;
-            position: relative;
+            border-radius: 4px 12px 12px 4px; position: relative;
             box-shadow: -5px 0 0 #5a1212, 10px 15px 35px rgba(0,0,0,0.6);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10;
-        }
-
-        .red-book-custom::before {
-            content: "";
-            position: absolute;
-            top: 15px; bottom: 15px; left: 15px; right: 15px;
-            border: 2px solid #d4af37;
-            opacity: 0.5;
-            border-radius: 2px;
-        }
-
-        .red-book-title { color: #d4af37; font-family: 'Playfair Display', serif; font-size: 2.8rem; text-shadow: 1px 2px 4px rgba(0,0,0,0.5); z-index: 12; transition: opacity 0.4s; }
-        .red-book-subtitle { color: #d4af37; font-size: 0.8rem; letter-spacing: 2px; opacity: 0.8; margin-top: 5px; z-index: 12; font-weight: bold; transition: opacity 0.4s; }
-
-        .class-book-item:hover { transform: translateY(-10px); }
-        .class-book-item:hover .red-book-custom { box-shadow: 0 25px 50px rgba(0,0,0,0.9); transform: scale(1.05); }
-
-        /* Animação de Zoom Simples */
-        .zooming-wrap {
-            position: fixed !important;
-            z-index: 5000 !important;
-            pointer-events: none;
-            left: 50% !important;
-            top: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            margin: 0 !important;
-        }
-
-        .zooming-wrap .red-book-custom {
-            transform: scale(8) !important;
-            box-shadow: none;
-            opacity: 0;
-        }
-        
-        .zooming-wrap .red-book-title, 
-        .zooming-wrap .red-book-subtitle,
-        .zooming-wrap .red-book-custom::before {
-            opacity: 0;
-        }
-
-        /* Banner */
-        .banner {
-            position: relative; height: 280px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; color: white; overflow: hidden;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: transform 0.3s;
         }
-        .banner-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://lh3.googleusercontent.com/d/1hm2VI0Mr65rQhvowKYC2jcFE3-KR5EoF');
-            background-size: cover; background-position: center;
-            filter: brightness(0.6); z-index: -1;
-        }
-        .banner h1 { font-family: 'Cherry Bomb One', cursive; font-size: 3.5rem; text-shadow: 2px 4px 10px rgba(0,0,0,0.5); z-index: 10; }
+        .red-book-custom:hover { transform: scale(1.05) translateY(-10px); }
+        .red-book-title { color: #d4af37; font-family: 'Playfair Display', serif; font-size: 2.5rem; }
 
-        /* Estante */
-        .library-container { max-width: 1100px; margin: 0 auto 100px auto; padding: 20px; transition: opacity 0.8s ease; opacity: 0; }
-        .library-container.visible { opacity: 1; }
+        /* Estante Estilizada (Textura de Madeira Realista) */
+        .library-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; opacity: 0; transition: 0.8s; }
+        .library-wrapper.visible { opacity: 1; }
+        
+        .bookcase { 
+            background-color: #3e2723;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); 
+            border: 20px solid #2d1b18; 
+            border-top-width: 35px;
+            border-bottom-width: 45px; 
+            border-radius: 8px; 
+            box-shadow: 0 50px 100px rgba(0,0,0,0.7), inset 0 0 100px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
+        }
 
         .shelf-row {
-            position: relative;
-            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'), 
-                              linear-gradient(to bottom, #795548, #5d4037);
-            background-color: #5d4037;
-            margin-bottom: 80px;
-            padding: 40px 30px 50px 30px; 
+            background-color: #4e342e;
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'); 
+            padding: 50px 30px 95px 30px; 
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-            justify-items: center;
-            border-radius: 4px;
-            border-left: 15px solid #4e342e;
-            border-right: 15px solid #4e342e;
-            box-shadow: inset 0 10px 20px rgba(0,0,0,0.4), 0 15px 30px rgba(0,0,0,0.3);
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+            gap: 40px;
+            border-bottom: 28px solid #2d1b18; 
+            position: relative;
+            box-shadow: inset 0 -20px 40px rgba(0,0,0,0.5), inset 0 20px 40px rgba(0,0,0,0.3);
         }
 
         .shelf-row::after {
-            content: ""; position: absolute; bottom: -20px; left: -15px; right: -15px; height: 25px;
-            background: #3e2723; background-image: linear-gradient(to bottom, #4e342e, #2b1d1a);
-            border-radius: 0 0 4px 4px; z-index: 5; box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+            content: ""; position: absolute; bottom: -28px; left: 0; right: 0; height: 4px;
+            background: rgba(255,255,255,0.1); z-index: 10;
         }
+
+        .bookcase::before, .bookcase::after {
+            content: ""; position: absolute; top: 0; bottom: 0; width: 18px;
+            background: linear-gradient(to right, #1a100e, #3e2723, #1a100e);
+            z-index: 5;
+        }
+        .bookcase::before { left: 0; }
+        .bookcase::after { right: 0; }
 
         /* Livros na Estante */
+        .book-item { width: 115px; height: 165px; position: relative; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .book-item:hover { transform: scale(1.1) translateY(-12px); z-index: 50; }
+        
+        .book-cover-small {
+            width: 100%; height: 100%; border-radius: 2px 7px 7px 2px;
+            box-shadow: 8px 12px 25px rgba(0,0,0,0.6);
+            position: relative;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 12px; text-align: center;
+            border-left: 5px solid #4a0e0e;
+            overflow: hidden;
+            background-image: linear-gradient(rgba(127, 29, 29, 0.88), rgba(90, 18, 18, 0.88)), url('https://lh3.googleusercontent.com/d/1nEdtoMa2uNyQ7cxL6R21oySfKWBuRqQJ');
+            background-size: cover; background-position: center;
+        }
+
+        .small-title-gold {
+            color: #d4af37; font-family: 'Cinzel', serif; font-size: 0.52rem; 
+            letter-spacing: 1px; margin-bottom: 6px; opacity: 0.95;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .small-name-gold {
+            color: #f3e5ab; font-family: 'Playfair Display', serif; font-size: 0.62rem;
+            font-weight: bold; line-height: 1.2;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .student-name-tag {
+            position: absolute; bottom: -65px; left: 50%; transform: translateX(-50%);
+            width: 150%; font-size: 0.72rem; font-weight: bold; color: #fff;
+            text-align: center; text-transform: uppercase; text-shadow: 2px 2px 4px #000;
+            background: rgba(0,0,0,0.4); padding: 5px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- LIVRO 3D MODAL --- */
+        #book-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.96); z-index: 9999; display: none;
+            justify-content: center; align-items: center; perspective: 2000px;
+            backdrop-filter: blur(18px);
+        }
+
         .book-container {
-            width: 130px;
-            height: 190px;
-            perspective: 1000px;
+            width: 420px; height: 600px; position: relative;
+            transform-style: preserve-3d; transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: pointer;
+        }
+
+        .cover-main {
+            position: absolute; width: 420px; height: 100%; left: 0; top: 0;
+            background: linear-gradient(135deg, #8b0000 0%, #5a1212 100%) !important;
+            z-index: 100; transform-origin: left;
+            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+            border-radius: 0 10px 10px 0; box-shadow: 20px 0 50px rgba(0,0,0,0.7);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-left: 18px solid #4a0e0e; backface-visibility: hidden;
+            padding: 45px; text-align: center;
+        }
+
+        .cover-main::before {
+            content: ""; position: absolute; inset: 20px; border: 5px double #d4af37;
+            border-radius: 6px; opacity: 0.6; pointer-events: none;
+        }
+
+        .main-title-gold {
+            color: #d4af37; font-family: 'Cinzel', serif; font-size: 1.7rem;
+            letter-spacing: 5px; margin-bottom: 35px; text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+        }
+
+        .main-name-gold {
+            color: #f3e5ab; font-family: 'Playfair Display', serif; font-size: 2.5rem;
+            font-weight: bold; line-height: 1.2; text-shadow: 3px 3px 8px rgba(0,0,0,0.7);
+        }
+
+        .book-container.open .cover-main { transform: rotateY(-180deg); }
+
+        .book-inner-pages {
+            position: absolute; width: 840px; height: 100%; left: 0; 
+            display: flex; opacity: 0; transition: opacity 0.5s ease;
+            z-index: 10; pointer-events: none; transform-style: preserve-3d;
+        }
+
+        .book-container.open .book-inner-pages { opacity: 1; transition-delay: 0.4s; pointer-events: auto; }
+
+        .page-base {
+            width: 420px; height: 100%; background: #fdfaf3; padding: 45px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             position: relative;
-            margin-bottom: 45px;
-            z-index: 10;
         }
 
-        .book-wrap {
+        .page-left { border-radius: 8px 0 0 8px; background: linear-gradient(to right, #e8dfcc, #fdfaf3 15%); border-right: 1px solid rgba(0,0,0,0.1); }
+        .page-right { border-radius: 0 8px 8px 0; background: linear-gradient(to left, #e8dfcc, #fdfaf3 15%); }
+
+        .work-image { width: 100%; max-height: 85%; object-fit: contain; border: 12px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+
+        .audio-player-box {
+            margin-top: 30px; background: #5d4037; color: white; padding: 18px 36px;
+            border-radius: 60px; cursor: pointer; display: flex; align-items: center; gap: 12px;
+            transition: 0.3s; font-weight: bold; box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        .audio-player-box:hover { background: #795548; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+
+        .close-btn {
+            position: fixed; top: 35px; right: 35px; color: white; font-size: 2rem;
+            cursor: pointer; z-index: 10000; background: rgba(255,255,255,0.12); width: 65px; height: 65px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            transition: 0.3s;
+        }
+        .close-btn:hover { background: rgba(255,50,50,0.5); transform: rotate(90deg); }
+
+        .click-hint {
+            position: absolute; bottom: 45px; right: 45px; color: #d4af37; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 2px; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        /* Ajuste para frase em uma única linha */
+        .single-line-quote {
+            white-space: nowrap;
             width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .book-inside {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 96%;
-            height: 98%;
-            background: #fff;
-            box-shadow: inset 5px 0 10px rgba(0,0,0,0.1);
-            border-radius: 0 4px 4px 0;
-            z-index: 1;
-            transform: translateZ(-1px);
-        }
-
-        .book-cover {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            border-radius: 2px 8px 8px 2px;
-            box-shadow: 3px 5px 15px rgba(0,0,0,0.3);
-            z-index: 10;
-            transform-origin: left;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 5px solid rgba(0,0,0,0.2);
-        }
-
-        .book-container:hover .book-cover { transform: rotateY(-110deg); box-shadow: -10px 10px 20px rgba(0,0,0,0.2); }
-        .book-container:hover .book-wrap { transform: translateX(20px); }
-
-        /* Efeito de Nome "Pintado" ou Gravado com cor na Madeira */
-        .student-label {
-            position: absolute;
-            bottom: -60px;
-            left: -10px;
-            right: -10px;
-            padding: 4px;
-            font-size: 0.68rem;
-            font-weight: 800;
             text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            
-            /* Cor de destaque: Creme/Bege para simular gravação preenchida */
-            color: #ece0d1;
-            
-            /* Sombra interna para parecer baixo relevo */
-            text-shadow: 
-                1px 1px 0px rgba(0, 0, 0, 0.6),
-                -0.5px -0.5px 0px rgba(255, 255, 255, 0.1);
-            
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 48px;
-            line-height: 1.2;
-            pointer-events: none;
-            opacity: 0.95;
-            font-family: 'Quicksand', sans-serif;
+            overflow: visible;
         }
 
-        @media (max-width: 640px) {
-            .shelf-row { grid-template-columns: repeat(2, 1fr); }
-            .banner h1 { font-size: 2.2rem; }
+        @media (max-width: 900px) {
+            .book-container { width: 320px; height: 480px; }
+            .book-inner-pages { width: 640px; }
+            .page-base { width: 320px; padding: 25px; }
+            .cover-main { width: 320px; padding: 25px; }
+            .single-line-quote { font-size: 0.85rem; }
         }
     </style>
 </head>
 <body class="overflow-hidden">
 
-    <!-- Menu Lateral -->
-    <div class="menu-btn" onclick="toggleMenu()">
-        <div></div><div></div><div></div>
-    </div>
-    <div class="menu-overlay" onclick="toggleMenu()"></div>
-    <div id="unit-menu">
-        <h2 class="text-2xl font-bold mb-6 text-amber-900" style="font-family: 'Cherry Bomb One'">Biblioteca</h2>
-        <ul class="space-y-4">
-            <li class="p-4 hover:bg-amber-50 text-amber-900 font-bold rounded-xl cursor-pointer border-2 border-amber-100 flex items-center gap-3 transition-all" onclick="triggerChangeClass()">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
-                Alterar Turma
-            </li>
-        </ul>
-    </div>
+    <!-- Modal Livro 3D -->
+    <div id="book-modal">
+        <div class="close-btn" onclick="closeBook()">✕</div>
+        
+        <div class="book-container" id="book-element" onclick="toggleBookOpen(event)">
+            <div class="cover-main" id="modal-cover-front">
+                <div id="cover-title-text" class="main-title-gold">MÁGICO DE OZ</div>
+                <div id="cover-name-text" class="main-name-gold"></div>
+                <div class="click-hint">Clique para abrir</div>
+            </div>
 
-    <!-- Seletor de Turma Inicial -->
-    <div id="class-selector">
-        <div class="text-center w-full px-4" id="books-selection-wrapper">
-            <h2 class="font-bold text-4xl mb-12 text-white" style="font-family: 'Cherry Bomb One'">Escolha a Turma</h2>
-            <div class="flex flex-wrap justify-center gap-4 sm:gap-12">
-                <div class="class-book-item" onclick="animateZoom(this, '5ºA')">
-                    <div class="red-book-custom">
-                        <span class="red-book-title">5ºA</span>
-                        <span class="red-book-subtitle">TURMA</span>
+            <div class="book-inner-pages" id="inner-pages" onclick="event.stopPropagation()">
+                <div class="page-base page-left">
+                    <h2 id="inner-student-name" class="text-3xl font-bold text-amber-900 mb-2 text-center" style="font-family: 'Playfair Display'"></h2>
+                    <div class="w-16 h-1.5 bg-amber-400 mb-8 rounded-full"></div>
+                    <!-- Frase ajustada para única linha -->
+                    <p class="single-line-quote text-amber-800 italic text-md mb-8 px-2">"Não há lugar como o nosso lar."</p>
+                    
+                    <div class="audio-player-box" id="audio-trigger">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        Ouvir Gravação
                     </div>
+                    <audio id="student-audio"></audio>
                 </div>
-                <div class="class-book-item" onclick="animateZoom(this, '5ºB')">
-                    <div class="red-book-custom">
-                        <span class="red-book-title">5ºB</span>
-                        <span class="red-book-subtitle">TURMA</span>
-                    </div>
-                </div>
-                <div class="class-book-item" onclick="animateZoom(this, '5ºC')">
-                    <div class="red-book-custom">
-                        <span class="red-book-title">5ºC</span>
-                        <span class="red-book-subtitle">TURMA</span>
-                    </div>
+                <div class="page-base page-right">
+                    <img id="work-img" src="" class="work-image" alt="Trabalho do Aluno">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Cabeçalho -->
-    <header class="banner">
-        <div class="banner-bg"></div>
-        <h1>Mágico de Oz</h1>
-        <p class="mt-4 bg-black/40 backdrop-blur-md px-6 py-2 rounded-full font-bold">
-            Unidade Campolim • <span id="display-class" class="text-amber-300">...</span> • 2026
-        </p>
+    <!-- UI Principal -->
+    <div id="class-selector">
+        <div class="text-center">
+            <h1 class="text-white text-5xl font-bold mb-12" style="font-family: 'Cherry Bomb One';">Selecione a Turma</h1>
+            <div class="flex gap-10 justify-center">
+                <div class="red-book-custom" onclick="startApp('5ºA')"><span class="red-book-title">5ºA</span></div>
+                <div class="red-book-custom" onclick="startApp('5ºB')"><span class="red-book-title">5ºB</span></div>
+                <div class="red-book-custom" onclick="startApp('5ºC')"><span class="red-book-title">5ºC</span></div>
+            </div>
+        </div>
+    </div>
+
+    <header class="banner h-[260px] bg-amber-900 flex flex-col items-center justify-center text-white relative shadow-xl border-b-8 border-[#2d1b18]">
+        <div class="absolute inset-0 opacity-45 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/d/1hm2VI0Mr65rQhvowKYC2jcFE3-KR5EoF')"></div>
+        <h1 class="text-6xl font-bold relative z-10" style="font-family: 'Cherry Bomb One'; text-shadow: 5px 5px 0px #3e2723;">Estante Virtual</h1>
+        <p class="relative z-10 mt-4 bg-amber-800/85 border border-amber-600/50 px-10 py-3 rounded-full text-md font-bold tracking-widest uppercase shadow-lg">Mágico de Oz • Unidade Campolim • <span id="current-class-label"></span></p>
     </header>
 
-    <!-- Estante Principal -->
-    <main class="library-container" id="shelf-manager"></main>
-
-    <footer class="text-center py-12 text-amber-900/60 font-bold">
-        <p>Projeto de Leitura - Profª Elaine • 2026</p>
-    </footer>
+    <div class="library-wrapper" id="lib-view">
+        <div class="bookcase" id="shelf-container"></div>
+    </div>
 
     <script>
         const ozCover = 'https://lh3.googleusercontent.com/d/1nEdtoMa2uNyQ7cxL6R21oySfKWBuRqQJ';
+        const targetStudent = "ALÍCIA CALIXTO FALQUEIRO";
+        const aliciaWork = "https://lh3.googleusercontent.com/d/19J-aT4ekQ9btD-mcWC7SBWGzY6ioe927";
         
-        const studentsByClass = {
+        const studentsData = {
             '5ºA': ["ALÍCIA CALIXTO FALQUEIRO", "ANGELO BRUGINSKI SCUDERI", "ARTHUR KENJI NAKAGAWA", "BERNARDO CHRISTIAN RIBEIRO FREIRE", "CAROLINA DE QUEIROZ MOREIRA", "CECÍLIA LEONEL NALESSO", "DANIEL SALVARANI GUARINHO", "EDUARDO FANTAZZINI GRANDISOLI", "EMI SAKIHAMA", "FERNANDA AKARI KIMURA", "GAEL FARHA CONDE", "GUSTAVO DE SOUZA SAMPAIO", "GUSTAVO SILVA E SOUZA", "HELENA HERINGER ROCHA SAD", "HELOISA ROSA DE SOUZA BARRETO", "JÚLIA ROSÁTI SILVA", "LORENA DE CARVALHO SALLES", "LORENZO AMARAL FURIGO CARDOSO", "LUCAS CASTELLI ALBUQUERQUE", "LUCAS OLIVEIRA MAIA", "LUCAS TADEU MUNIZ DA SILVA", "LUIZA BELLOTTO BARRETTO", "MARINA SARTORETO FERNANDES", "PEDRO RIBEIRO DE OLIVEIRA", "RAFAEL WATANABE SOUZA BARBIERI", "RAFAELLA MUOIO POLIDO", "THEO BRITO SEGAMARCHI"],
             '5ºB': ["ALICE BELLUCCI ASCENCIO", "ALICE DE FREITAS OLHIER", "ANTONELLA JULIO VETTORAZZO CHIESA REY", "ARTHUR CORDEIRO PIZA", "BERNARDO VENTURA SÃO PIETRO", "CAROLINA SAES RUIZ", "CATARINA MARQUES RAMOS", "CECÍLIA ZAN BARROSO", "EDUARDO FRANCO TOLEDO PINTO", "ENZO ANDRADE ALVES", "FELIPE GUIMARÃES DE SOUZA", "GABRIEL YUZUI VICECONTI", "GIOVANI DIEZEL MUNHOZ", "GIULIA REZENDE PASSOS", "ISABELA AGOSTINELI TRIDAPALLI", "ISABELLA BOAVENTURA GOMES DA SILVA OLIVEIRA", "LARISSA DAMASCENO BRUDER SANTINI", "LÍVIA MAXCARENHAS BEDULLI", "LORENZO ATTIÊ BRUNI", "LUCAS BERNARDO MATUTINO DE OLIVEIRA", "MARCELLA TARABORELLI LIMONGELLI", "MARCELO SOUZA VARCA", "MARCUS MIGUEL CORDEIRO DE MORAES", "MARIA EDUARDA LEMOS LIMA", "MARIAH ANTONELLA MACIEL MAESTÁ", "MATEUS CARVALHO MADEIRA", "MATHEUS DA SILVA VACCARO", "PEDRO CAMPOS VIZCARRA ZUNIGA"],
             '5ºC': ["ALICE VIEIRA ESTEVES", "BEATRIZ PAZINI SOARES", "BERNARDO MICHELETTI FRANCISCO", "CECÍLIA SALCEDO FERNANDES", "CLARA COSTA RIBAS FRAMIL SANCHES", "DAVI CARVALHO DE VASCONCELOS", "ENRICO FESTINO MARTORELLI", "GABRIEL MAMEDE DE ALMEIDA FERREIRA", "GABRIEL RIBEIRO DA SILVA", "GIOVANNA DA SILVA PRESTES", "GIOVANNA LA TORRE MARTINS", "GIULIA VIEIRA SACCOMANO", "JOÃO LUCCA SANTI SILVA", "JOSÉ FORTE PESSOA JUNIOR", "LAURA AGRA DE MORAES", "LEONARDO DA SILVA CORRÊA", "LORENA MIDLEY PAULETTI", "LUIZA HIGUCHI ROSA", "MARI UEDA POSSATO VENANCIO", "MARIA FERNANDA RUIVO ALBIERO", "MARIA LÚCIA LODI PALHARES", "MATHEUS BORGES GARRIDO", "MATHEUS CARDOSO LICHMANN", "PEDRO DOS SANTOS FREITAS", "RAFAEL DE BARROS VICENTIN", "RAFAELA RAMALHO GUIRELI", "STELLA HOFFMANN FOGAÇA", "VALENTINA PALEARI CASSIMIRO", "VÍTOR HENRIQUE MARTINS DE PAULO"]
         };
 
-        function animateZoom(element, className) {
-            const rect = element.getBoundingClientRect();
-            const clone = element.cloneNode(true);
-            
-            clone.style.position = 'fixed';
-            clone.style.top = rect.top + 'px';
-            clone.style.left = rect.left + 'px';
-            clone.style.width = rect.width + 'px';
-            clone.style.height = rect.height + 'px';
-            clone.style.margin = '0';
-            clone.style.zIndex = '5000';
-            clone.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-            
-            document.body.appendChild(clone);
-            
-            requestAnimationFrame(() => {
-                clone.classList.add('zooming-wrap');
-                document.getElementById('class-selector').style.opacity = '0';
-            });
-
+        function startApp(className) {
+            document.getElementById('class-selector').style.opacity = '0';
             setTimeout(() => {
-                selectClass(className);
-                document.body.removeChild(clone);
                 document.getElementById('class-selector').style.display = 'none';
-                document.querySelector('.library-container').classList.add('visible');
-            }, 800);
+                document.getElementById('current-class-label').innerText = className;
+                document.getElementById('lib-view').classList.add('visible');
+                renderShelf(className);
+                document.body.classList.remove('overflow-hidden');
+            }, 600);
         }
 
-        function initLibrary(className) {
-            const container = document.getElementById('shelf-manager');
+        function renderShelf(className) {
+            const container = document.getElementById('shelf-container');
             container.innerHTML = '';
-            const students = studentsByClass[className] || [];
-            const booksPerRow = 5;
-            const rowsCount = Math.ceil(students.length / booksPerRow);
-
-            for (let i = 0; i < rowsCount; i++) {
-                const shelf = document.createElement('div');
-                shelf.className = 'shelf-row';
-                for (let j = 0; j < booksPerRow; j++) {
-                    const studentIndex = (i * booksPerRow) + j;
-                    if (studentIndex >= students.length) break;
-                    const studentName = students[studentIndex];
-                    const bookContainer = document.createElement('div');
-                    bookContainer.className = 'book-container';
-                    bookContainer.innerHTML = `
-                        <div class="book-wrap">
-                            <div class="book-inside"></div>
-                            <div class="book-cover" style="background-image: url('${ozCover}')"></div>
+            const students = studentsData[className];
+            const perRow = 5;
+            
+            for(let i=0; i < students.length; i+=perRow) {
+                const row = document.createElement('div');
+                row.className = 'shelf-row';
+                students.slice(i, i+perRow).forEach(name => {
+                    const item = document.createElement('div');
+                    item.className = 'book-item';
+                    item.onclick = () => openModal(name);
+                    
+                    item.innerHTML = `
+                        <div class="book-cover-small">
+                            <div class="small-title-gold">MÁGICO DE OZ</div>
+                            <div class="small-name-gold">${name}</div>
                         </div>
-                        <span class="student-label">${studentName}</span>
+                        <div class="student-name-tag">${name}</div>
                     `;
-                    shelf.appendChild(bookContainer);
-                }
-                container.appendChild(shelf);
+                    row.appendChild(item);
+                });
+                container.appendChild(row);
             }
         }
 
-        function toggleMenu() {
-            const menu = document.getElementById('unit-menu');
-            const overlay = document.querySelector('.menu-overlay');
-            menu.classList.toggle('active');
-            overlay.style.display = menu.classList.contains('active') ? 'block' : 'none';
+        function openModal(name) {
+            const modal = document.getElementById('book-modal');
+            const book = document.getElementById('book-element');
+            const coverNameText = document.getElementById('cover-name-text');
+            
+            coverNameText.innerText = name;
+            document.getElementById('inner-student-name').innerText = name;
+            
+            const img = document.getElementById('work-img');
+            const audio = document.getElementById('student-audio');
+
+            if (name === targetStudent) {
+                img.src = aliciaWork;
+                audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+            } else {
+                img.src = ozCover; 
+                audio.src = "";
+            }
+
+            modal.style.display = 'flex';
+            book.classList.remove('open');
+            book.style.transform = "translateX(0) rotateX(5deg)";
         }
 
-        function triggerChangeClass() {
-            toggleMenu();
-            const selector = document.getElementById('class-selector');
-            selector.style.display = 'flex';
-            selector.style.opacity = '1';
-            document.querySelector('.library-container').classList.remove('visible');
-            document.body.classList.add('overflow-hidden');
+        function toggleBookOpen(e) {
+            const book = document.getElementById('book-element');
+            if (!book.classList.contains('open')) {
+                book.classList.add('open');
+                book.style.transform = "translateX(-210px) rotateX(0deg)";
+            }
         }
 
-        function selectClass(className) {
-            document.getElementById('display-class').innerText = className;
-            document.body.classList.remove('overflow-hidden');
-            initLibrary(className);
+        function closeBook() {
+            const book = document.getElementById('book-element');
+            const audio = document.getElementById('student-audio');
+            audio.pause();
+            book.classList.remove('open');
+            book.style.transform = "translateX(0) rotateX(5deg)";
+            setTimeout(() => {
+                document.getElementById('book-modal').style.display = 'none';
+            }, 850);
         }
 
-        window.onload = () => { document.body.classList.add('overflow-hidden'); };
+        document.getElementById('audio-trigger').onclick = (e) => {
+            e.stopPropagation();
+            const audio = document.getElementById('student-audio');
+            if(audio.src) audio.paused ? audio.play() : audio.pause();
+        };
     </script>
 </body>
 </html>
