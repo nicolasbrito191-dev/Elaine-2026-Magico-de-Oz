@@ -125,27 +125,43 @@
             transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer;
         }
 
+        /* Capa Frontal */
         .cover-main {
             position: absolute; width: 420px; height: 100%; left: 0; top: 0;
             background: linear-gradient(135deg, #8b0000 0%, #5a1212 100%) !important;
             z-index: 100; transform-origin: left; border-radius: 0 10px 10px 0;
-            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.5s;
             border-left: 18px solid #4a0e0e; padding: 45px; text-align: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            backface-visibility: hidden;
         }
-        .book-container.open .cover-main { transform: rotateY(-180deg); }
+        
+        .book-container.open .cover-main { 
+            transform: rotateY(-160deg); 
+            opacity: 0;
+            pointer-events: none;
+        }
 
+        /* Páginas Internas */
         .book-inner-pages {
-            position: absolute; width: 840px; height: 100%; left: 0; 
-            display: flex; opacity: 0; transition: opacity 0.5s ease;
-            z-index: 10; pointer-events: none; transform-style: preserve-3d;
+            position: absolute; width: 840px; height: 100%; 
+            left: 50%; top: 0; transform: translateX(-50%);
+            display: flex; opacity: 0; transition: opacity 0.6s ease, transform 0.8s;
+            z-index: 50; pointer-events: none; transform-style: preserve-3d;
         }
-        .book-container.open .book-inner-pages { opacity: 1; transition-delay: 0.4s; pointer-events: auto; }
+        
+        .book-container.open .book-inner-pages { 
+            opacity: 1; 
+            transition-delay: 0.3s; 
+            pointer-events: auto; 
+        }
 
         .page-base {
             width: 420px; height: 100%; background: #fdfaf3; padding: 45px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.1);
         }
-        .page-left { border-radius: 8px 0 0 8px; background: linear-gradient(to right, #e8dfcc, #fdfaf3 15%); }
+        .page-left { border-radius: 8px 0 0 8px; background: linear-gradient(to right, #e8dfcc, #fdfaf3 15%); border-right: 1px solid rgba(0,0,0,0.1); }
         .page-right { border-radius: 0 8px 8px 0; background: linear-gradient(to left, #e8dfcc, #fdfaf3 15%); }
 
         .work-image { width: 100%; max-height: 85%; object-fit: contain; border: 12px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
@@ -155,14 +171,24 @@
             border-radius: 60px; cursor: pointer; display: flex; align-items: center; gap: 12px;
             transition: 0.3s; font-weight: bold;
         }
+        .audio-player-box:hover { background: #795548; transform: scale(1.05); }
 
         .close-btn {
             position: fixed; top: 35px; right: 35px; color: white; font-size: 2rem;
             cursor: pointer; z-index: 10000; background: rgba(255,255,255,0.12); width: 65px; height: 65px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            transition: 0.3s;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.25); transform: rotate(90deg); }
+
+        .cover-icon {
+            width: 80px;
+            height: auto;
+            margin-top: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
 
-        /* Frase em uma única linha */
         .single-line-quote {
             white-space: nowrap;
             width: 100%;
@@ -175,12 +201,13 @@
             .book-inner-pages { width: 640px; }
             .page-base { width: 320px; padding: 25px; }
             .single-line-quote { font-size: 0.85rem; }
+            .cover-icon { width: 60px; }
+            .cover-main { width: 320px; }
         }
     </style>
 </head>
 <body class="overflow-hidden">
 
-    <!-- Menu Lateral (Sidebar) -->
     <div id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div id="sidebar">
         <h2 class="text-2xl font-bold mb-8 border-b border-amber-500/30 pb-4" style="font-family: 'Cherry Bomb One'">Trocar Turma</h2>
@@ -190,21 +217,20 @@
         <div class="mt-20 opacity-50 text-xs uppercase tracking-widest text-center">Unidade Campolim</div>
     </div>
 
-    <!-- Ícone de Menu -->
     <div class="menu-icon" id="main-menu-icon" onclick="openSidebar()">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
     </div>
 
-    <!-- Modal Livro 3D -->
     <div id="book-modal">
         <div class="close-btn" onclick="closeBook()">✕</div>
         <div class="book-container" id="book-element" onclick="toggleBookOpen(event)">
             <div class="cover-main" id="modal-cover-front">
                 <div class="main-title-gold text-[#d4af37] text-xl tracking-[5px] mb-8" style="font-family: 'Cinzel'">MÁGICO DE OZ</div>
                 <div id="cover-name-text" class="main-name-gold text-[#f3e5ab] text-4xl font-bold" style="font-family: 'Playfair Display'"></div>
-                <div class="click-hint absolute bottom-12 text-[#d4af37] animate-pulse">Clique para abrir</div>
+                <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="cover-icon" alt="Ícone Poema">
+                <div class="click-hint mb-4 text-[#d4af37] animate-pulse">Clique para abrir</div>
             </div>
 
             <div class="book-inner-pages" id="inner-pages">
@@ -216,7 +242,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         Ouvir Gravação
                     </div>
-                    <audio id="student-audio"></audio>
+                    <audio id="student-audio" crossorigin="anonymous"></audio>
                 </div>
                 <div class="page-base page-right">
                     <img id="work-img" src="" class="work-image" alt="Trabalho">
@@ -225,7 +251,6 @@
         </div>
     </div>
 
-    <!-- Seletor Inicial -->
     <div id="class-selector">
         <div class="text-center">
             <h1 class="text-white text-5xl font-bold mb-12" style="font-family: 'Cherry Bomb One';">Selecione a Turma</h1>
@@ -249,13 +274,42 @@
 
     <script>
         const ozCover = 'https://lh3.googleusercontent.com/d/1nEdtoMa2uNyQ7cxL6R21oySfKWBuRqQJ';
-        const targetStudent = "ALÍCIA CALIXTO FALQUEIRO";
-        const aliciaWork = "https://lh3.googleusercontent.com/d/19J-aT4ekQ9btD-mcWC7SBWGzY6ioe927";
+        
+        /**
+         * Converte links de visualização do Google Drive em links de stream direto.
+         * O formato ideal para a tag <audio> é 'docs.google.com/uc?export=download&id='
+         */
+        function getDirectAudioUrl(input) {
+            if (!input) return "";
+            
+            // Se for apenas o ID (ex: "1IGm...")
+            let id = input;
+            
+            // Se for um link completo, extrai o ID
+            if (input.includes("drive.google.com")) {
+                const match = input.match(/\/d\/([a-zA-Z0-9_-]+)/) || input.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                if (match && match[1]) id = match[1];
+            }
+            
+            // Retorna o formato universal de stream do Drive
+            return `https://docs.google.com/uc?export=download&id=${id}`;
+        }
+
+        const mediaConfig = {
+            "ALÍCIA CALIXTO FALQUEIRO": {
+                work: "https://lh3.googleusercontent.com/d/19J-aT4ekQ9btD-mcWC7SBWGzY6ioe927",
+                audio: getDirectAudioUrl("1IGmY5kvVT54r7dx28D1rac3r8RZned05")
+            },
+            "ANGELO BRUGINSKI SCUDERI": {
+                work: ozCover,
+                audio: getDirectAudioUrl("1lJPQTCanurg8Fa-4ULkvkSSbgx8b3Mav")
+            }
+        };
         
         const studentsData = {
             '5ºA': ["ALÍCIA CALIXTO FALQUEIRO", "ANGELO BRUGINSKI SCUDERI", "ARTHUR KENJI NAKAGAWA", "BERNARDO CHRISTIAN RIBEIRO FREIRE", "CAROLINA DE QUEIROZ MOREIRA", "CECÍLIA LEONEL NALESSO", "DANIEL SALVARANI GUARINHO", "EDUARDO FANTAZZINI GRANDISOLI", "EMI SAKIHAMA", "FERNANDA AKARI KIMURA", "GAEL FARHA CONDE", "GUSTAVO DE SOUZA SAMPAIO", "GUSTAVO SILVA E SOUZA", "HELENA HERINGER ROCHA SAD", "HELOISA ROSA DE SOUZA BARRETO", "JÚLIA ROSÁTI SILVA", "LORENA DE CARVALHO SALLES", "LORENZO AMARAL FURIGO CARDOSO", "LUCAS CASTELLI ALBUQUERQUE", "LUCAS OLIVEIRA MAIA", "LUCAS TADEU MUNIZ DA SILVA", "LUIZA BELLOTTO BARRETTO", "MARINA SARTORETO FERNANDES", "PEDRO RIBEIRO DE OLIVEIRA", "RAFAEL WATANABE SOUZA BARBIERI", "RAFAELLA MUOIO POLIDO", "THEO BRITO SEGAMARCHI"],
             '5ºB': ["ALICE BELLUCCI ASCENCIO", "ALICE DE FREITAS OLHIER", "ANTONELLA JULIO VETTORAZZO CHIESA REY", "ARTHUR CORDEIRO PIZA", "BERNARDO VENTURA SÃO PIETRO", "CAROLINA SAES RUIZ", "CATARINA MARQUES RAMOS", "CECÍLIA ZAN BARROSO", "EDUARDO FRANCO TOLEDO PINTO", "ENZO ANDRADE ALVES", "FELIPE GUIMARÃES DE SOUZA", "GABRIEL YUZUI VICECONTI", "GIOVANI DIEZEL MUNHOZ", "GIULIA REZENDE PASSOS", "ISABELA AGOSTINELI TRIDAPALLI", "ISABELLA BOAVENTURA GOMES DA SILVA OLIVEIRA", "LARISSA DAMASCENO BRUDER SANTINI", "LÍVIA MAXCARENHAS BEDULLI", "LORENZO ATTIÊ BRUNI", "LUCAS BERNARDO MATUTINO DE OLIVEIRA", "MARCELLA TARABORELLI LIMONGELLI", "MARCELO SOUZA VARCA", "MARCUS MIGUEL CORDEIRO DE MORAES", "MARIA EDUARDA LEMOS LIMA", "MARIAH ANTONELLA MACIEL MAESTÁ", "MATEUS CARVALHO MADEIRA", "MATHEUS DA SILVA VACCARO", "PEDRO CAMPOS VIZCARRA ZUNIGA"],
-            '5ºC': ["ALICE VIEIRA ESTEVES", "BEATRIZ PAZINI SOARES", "BERNARDO MICHELETTI FRANCISCO", "CECÍLIA SALCEDO FERNANDES", "CLARA COSTA RIBAS FRAMIL SANCHES", "DAVI CARVALHO DE VASCONCELOS", "ENRICO FESTINO MARTORELLI", "GABRIEL MAMEDE DE ALMEIDA FERREIRA", "GABRIEL RIBEIRO DA SILVA", "GIOVANNA DA SILVA PRESTES", "GIOVANNA LA TORRE MARTINS", "GIULIA VIEIRA SACCOMANO", "JOÃO LUCCA SANTI SILVA", "JOSÉ FORTE PESSOA JUNIOR", "LAURA AGRA DE MORAES", "LEONARDO DA SILVA CORRÊA", "LORENA MIDLEY PAULETTI", "LUIZA HIGUCHI ROSA", "MARI UEDA POSSATO VENANCIO", "MARIA FERNANDA RUIVO ALBIERO", "MARIA LÚCIA LODI PALHARES", "MATHEUS BORGES GARRIDO", "MATHEUS CARDOSO LICHMANN", "PEDRO DOS SANTOS FREITAS", "RAFAEL DE BARROS VICENTIN", "RAFAELA RAMALHO GUIRELI", "STELLA HOFFMANN FOGAÇA", "VALENTINA PALEARI CASSIMIRO", "VÍTOR HENRIQUE MARTINS DE PAULO"]
+            '5ºC': ["ALICE VIEIRA ESTEVES", "BEATRIZ PAZINI SOARES", "BERNARDO MICHELETTI FRANCISCO", "CECÍLIA SALCEDO FERNANDES", "CLARA COSTA RIBAS FRAMIL SANCHES", "DAVI CARVALHO DE VASCELOS", "ENRICO FESTINO MARTORELLI", "GABRIEL MAMEDE DE ALMEIDA FERREIRA", "GABRIEL RIBEIRO DA SILVA", "GIOVANNA DA SILVA PRESTES", "GIOVANNA LA TORRE MARTINS", "GIULIA VIEIRA SACCOMANO", "JOÃO LUCCA SANTI SILVA", "JOSÉ FORTE PESSOA JUNIOR", "LAURA AGRA DE MORAES", "LEONARDO DA SILVA CORRÊA", "LORENA MIDLEY PAULETTI", "LUIZA HIGUCHI ROSA", "MARI UEDA POSSATO VENANCIO", "MARIA FERNANDA RUIVO ALBIERO", "MARIA LÚCIA LODI PALHARES", "MATHEUS BORGES GARRIDO", "MATHEUS CARDOSO LICHMANN", "PEDRO DOS SANTOS FREITAS", "RAFAEL DE BARROS VICENTIN", "RAFAELA RAMALHO GUIRELI", "STELLA HOFFMANN FOGAÇA", "VALENTINA PALEARI CASSIMIRO", "VÍTOR HENRIQUE MARTINS DE PAULO"]
         };
 
         function startApp(className) {
@@ -316,37 +370,67 @@
         function openModal(name) {
             const modal = document.getElementById('book-modal');
             const book = document.getElementById('book-element');
+            const audio = document.getElementById('student-audio');
+            const img = document.getElementById('work-img');
+            
             document.getElementById('cover-name-text').innerText = name;
             document.getElementById('inner-student-name').innerText = name;
             
-            const img = document.getElementById('work-img');
-            img.src = (name === targetStudent) ? aliciaWork : ozCover;
+            const config = mediaConfig[name];
+            img.src = config ? config.work : ozCover;
+            
+            // Limpa o estado do áudio anterior
+            audio.pause();
+            audio.removeAttribute('src');
+            audio.load();
+
+            if (config && config.audio) {
+                // Atribui a nova URL de stream direto
+                audio.src = config.audio;
+                audio.load();
+            }
 
             modal.style.display = 'flex';
             book.classList.remove('open');
-            book.style.transform = "translateX(0) rotateX(5deg)";
+            book.style.transform = "rotateX(5deg)";
         }
 
         function toggleBookOpen(e) {
             const book = document.getElementById('book-element');
             if (!book.classList.contains('open')) {
                 book.classList.add('open');
-                book.style.transform = "translateX(-210px) rotateX(0deg)";
+                book.style.transform = "rotateX(0deg)";
             }
         }
 
         function closeBook() {
             const book = document.getElementById('book-element');
-            document.getElementById('student-audio').pause();
+            const audio = document.getElementById('student-audio');
+            audio.pause();
+            audio.currentTime = 0;
             book.classList.remove('open');
-            book.style.transform = "translateX(0) rotateX(5deg)";
+            book.style.transform = "rotateX(5deg)";
             setTimeout(() => { document.getElementById('book-modal').style.display = 'none'; }, 850);
         }
 
         document.getElementById('audio-trigger').onclick = (e) => {
             e.stopPropagation();
             const audio = document.getElementById('student-audio');
-            if(audio.src) audio.paused ? audio.play() : audio.pause();
+            
+            if (audio.src && audio.src !== window.location.href) {
+                if (audio.paused) {
+                    audio.play().catch(err => {
+                        console.error("Erro ao reproduzir:", err);
+                        // Tenta recarregar uma vez em caso de erro de rede
+                        audio.load();
+                        audio.play().catch(e => console.log("Falha persistente na reprodução."));
+                    });
+                } else {
+                    audio.pause();
+                }
+            } else {
+                console.warn("Nenhuma fonte de áudio válida disponível para este aluno.");
+            }
         };
     </script>
 </body>
