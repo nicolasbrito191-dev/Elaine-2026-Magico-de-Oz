@@ -70,7 +70,7 @@
 
         /* ESTANTE AMPLIADA HORIZONTALMENTE */
         .library-wrapper { 
-            max-width: 1400px; /* Aumentado de 1100px para 1400px */
+            max-width: 1400px; 
             margin: 40px auto; 
             padding: 0 40px; 
             opacity: 0; 
@@ -88,10 +88,10 @@
         }
 
         .shelf-row {
-            padding: 60px 60px 100px 60px; /* Padding aumentado para melhor respiro */
+            padding: 60px 60px 100px 60px; 
             display: grid;
             grid-template-columns: repeat(5, 1fr); 
-            gap: 50px 40px; /* Gap aumentado entre os livros */
+            gap: 50px 40px; 
             border-bottom: 35px solid #2d1b18; 
             position: relative;
             background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
@@ -199,20 +199,20 @@
             font-family: 'Quicksand', sans-serif;
         }
         .footer-content {
-            max-width: 1200px; /* Acompanhando a largura maior */
+            max-width: 1200px; 
             margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
         .footer-logo {
-            width: 110px;
+            width: 110px; 
             height: auto;
             filter: brightness(0) invert(1);
-            opacity: 0.5;
+            opacity: 0.8; 
             transition: 0.3s;
         }
-        .footer-logo:hover { opacity: 0.8; }
+        .footer-logo:hover { opacity: 1; }
 
         @media (max-width: 900px) {
             .book-container { width: 300px; height: 420px; }
@@ -221,6 +221,9 @@
             .shelf-row { grid-template-columns: repeat(3, 1fr); padding: 30px 15px 70px 15px; }
             .footer-content { flex-direction: column; gap: 20px; text-align: center; }
             .library-wrapper { padding: 0 10px; }
+            .banner { height: auto; padding: 40px 20px; }
+            .banner-content { flex-direction: column; gap: 30px; }
+            .banner-logo-placeholder { display: none; }
         }
     </style>
 </head>
@@ -278,18 +281,29 @@
         </div>
     </div>
 
-    <!-- Banner Superior -->
-    <header class="banner h-[280px] bg-amber-900 text-white relative shadow-xl border-b-8 border-[#2d1b18] flex items-center px-12 overflow-hidden">
+    <!-- Banner Superior (Logotipo TE removido) -->
+    <header class="banner h-[300px] bg-amber-900 text-white relative shadow-xl border-b-8 border-[#2d1b18] flex items-center px-8 overflow-hidden">
         <div class="absolute inset-0 opacity-40 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/d/1hm2VI0Mr65rQhvowKYC2jcFE3-KR5EoF')"></div>
         
-        <div class="relative z-10 w-full flex items-center justify-between max-w-7xl mx-auto">
-            <div class="flex items-center gap-8">
-                <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="w-24 h-auto filter brightness-0 invert" alt="Logo Colégio Banner">
-                <div>
-                    <h1 class="text-6xl font-bold" style="font-family: 'Cherry Bomb One'; text-shadow: 4px 4px 0px #3e2723;">Estante Virtual</h1>
-                    <p class="mt-2 bg-amber-800/90 border border-amber-600/50 px-6 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase inline-block">Mágico de Oz • Campolim • <span id="current-class-label"></span></p>
+        <div class="relative z-10 w-full flex items-center justify-between max-w-7xl mx-auto banner-content">
+            <!-- Logo Esquerda -->
+            <div class="flex-shrink-0">
+                <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="w-24 h-auto filter brightness-0 invert" alt="Logo Colégio">
+            </div>
+
+            <!-- Títulos Centralizados -->
+            <div class="text-center flex-grow px-4">
+                <h1 class="text-6xl font-bold leading-tight" style="font-family: 'Cherry Bomb One'; text-shadow: 4px 4px 0px #3e2723;">Estante Virtual</h1>
+                <div class="flex flex-col items-center mt-2">
+                    <div class="w-24 h-1 bg-amber-500/50 mb-3 rounded-full"></div>
+                    <p class="bg-amber-800/90 border border-amber-600/50 px-8 py-2 rounded-full text-sm font-bold tracking-[0.2em] uppercase shadow-lg">
+                        Mágico de Oz • Campolim • <span id="current-class-label"></span>
+                    </p>
                 </div>
             </div>
+
+            <!-- Espaçador à direita para manter o equilíbrio do alinhamento central -->
+            <div class="flex-shrink-0 w-24 banner-logo-placeholder"></div>
         </div>
     </header>
 
@@ -298,10 +312,10 @@
         <div class="bookcase" id="shelf-container"></div>
     </div>
 
-    <!-- Rodapé Reajustado -->
+    <!-- Rodapé -->
     <footer>
         <div class="footer-content">
-            <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="footer-logo" alt="Logo Colégio Rodapé">
+            <img src="https://lh3.googleusercontent.com/d/1E49ixG8NWq1CestH_lJJiPxTFzyZT3xb" class="footer-logo" alt="Logo TE Rodapé">
             
             <div class="text-right">
                 <p class="text-lg font-bold uppercase tracking-[3px]" style="font-family: 'Cinzel'">Colégio Ser</p>
