@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto de Leitura: Mágico de Oz</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Cherry+Bomb+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Cherry+Bomb+One&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Quicksand', sans-serif;
@@ -15,7 +15,7 @@
             overflow-x: hidden;
         }
 
-        /* Menu de Turmas */
+        /* Menu Lateral */
         .menu-btn {
             position: fixed;
             top: 20px;
@@ -31,12 +31,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             border: 2px solid #8d6e63;
         }
-        .menu-btn div {
-            width: 25px;
-            height: 3px;
-            background: white;
-            border-radius: 2px;
-        }
+        .menu-btn div { width: 25px; height: 3px; background: white; border-radius: 2px; }
 
         #unit-menu {
             position: fixed;
@@ -63,32 +58,86 @@
             backdrop-filter: blur(4px);
         }
 
-        /* Seletor de Turma */
+        /* Seletor de Turma Inicial */
         #class-selector {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(46, 33, 27, 0.8);
+            background: rgba(26, 18, 14, 1);
             z-index: 4000;
             display: flex;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(20px);
-            transition: opacity 0.5s ease;
+            backdrop-filter: blur(15px);
+            transition: opacity 0.6s ease;
         }
-        .class-circle {
-            width: 130px; height: 130px;
-            background: #795548; color: white; border-radius: 50%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; transition: 0.4s; border: 6px solid #a1887f; margin: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            font-weight: bold;
-        }
-        .class-circle:hover { transform: scale(1.1) translateY(-5px); background: #8d6e63; }
 
-        /* Banner Principal */
+        .class-book-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 25px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .red-book-custom {
+            width: 160px;
+            height: 230px;
+            background: linear-gradient(135deg, #a52a2a 0%, #7f1d1d 100%);
+            border-radius: 4px 12px 12px 4px;
+            position: relative;
+            box-shadow: -5px 0 0 #5a1212, 10px 15px 35px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+
+        .red-book-custom::before {
+            content: "";
+            position: absolute;
+            top: 15px; bottom: 15px; left: 15px; right: 15px;
+            border: 2px solid #d4af37;
+            opacity: 0.5;
+            border-radius: 2px;
+        }
+
+        .red-book-title { color: #d4af37; font-family: 'Playfair Display', serif; font-size: 2.8rem; text-shadow: 1px 2px 4px rgba(0,0,0,0.5); z-index: 12; transition: opacity 0.4s; }
+        .red-book-subtitle { color: #d4af37; font-size: 0.8rem; letter-spacing: 2px; opacity: 0.8; margin-top: 5px; z-index: 12; font-weight: bold; transition: opacity 0.4s; }
+
+        .class-book-item:hover { transform: translateY(-10px); }
+        .class-book-item:hover .red-book-custom { box-shadow: 0 25px 50px rgba(0,0,0,0.9); transform: scale(1.05); }
+
+        /* Animação de Zoom Simples */
+        .zooming-wrap {
+            position: fixed !important;
+            z-index: 5000 !important;
+            pointer-events: none;
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            margin: 0 !important;
+        }
+
+        .zooming-wrap .red-book-custom {
+            transform: scale(8) !important;
+            box-shadow: none;
+            opacity: 0;
+        }
+        
+        .zooming-wrap .red-book-title, 
+        .zooming-wrap .red-book-subtitle,
+        .zooming-wrap .red-book-custom::before {
+            opacity: 0;
+        }
+
+        /* Banner */
         .banner {
             position: relative; height: 280px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -103,132 +152,117 @@
             filter: brightness(0.6); z-index: -1;
         }
         .banner h1 { font-family: 'Cherry Bomb One', cursive; font-size: 3.5rem; text-shadow: 2px 4px 10px rgba(0,0,0,0.5); z-index: 10; }
-        .banner p { z-index: 10; }
 
-        /* Container Principal da Biblioteca */
-        .library-container {
-            max-width: 1100px;
-            margin: 0 auto 100px auto;
-            padding: 20px;
-        }
+        /* Estante */
+        .library-container { max-width: 1100px; margin: 0 auto 100px auto; padding: 20px; transition: opacity 0.8s ease; opacity: 0; }
+        .library-container.visible { opacity: 1; }
 
-        /* ESTANTE DE MADEIRA - Estilo conforme imagem solicitada */
         .shelf-row {
             position: relative;
             background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'), 
                               linear-gradient(to bottom, #795548, #5d4037);
             background-color: #5d4037;
             margin-bottom: 80px;
-            padding: 40px 30px 25px 30px;
+            padding: 40px 30px 50px 30px; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 20px;
             justify-items: center;
-            
-            /* Bordas e Profundidade da Madeira */
             border-radius: 4px;
             border-left: 15px solid #4e342e;
             border-right: 15px solid #4e342e;
-            box-shadow: 
-                inset 0 10px 20px rgba(0,0,0,0.4), /* Sombra interna topo */
-                0 15px 30px rgba(0,0,0,0.3);      /* Sombra projetada no chão */
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.4), 0 15px 30px rgba(0,0,0,0.3);
         }
 
-        /* A Prateleira (Base de Madeira) */
         .shelf-row::after {
-            content: "";
-            position: absolute;
-            bottom: -20px;
-            left: -15px;
-            right: -15px;
-            height: 25px;
-            background: #3e2723;
-            background-image: linear-gradient(to bottom, #4e342e, #2b1d1a);
-            border-radius: 0 0 4px 4px;
-            z-index: 5;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+            content: ""; position: absolute; bottom: -20px; left: -15px; right: -15px; height: 25px;
+            background: #3e2723; background-image: linear-gradient(to bottom, #4e342e, #2b1d1a);
+            border-radius: 0 0 4px 4px; z-index: 5; box-shadow: 0 5px 10px rgba(0,0,0,0.5);
         }
 
-        /* Fundo da Estante (Parte de trás) */
-        .shelf-row::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.15);
-            pointer-events: none;
-        }
-
-        /* Livros */
+        /* Livros na Estante */
         .book-container {
             width: 130px;
+            height: 190px;
             perspective: 1000px;
             position: relative;
-            margin-bottom: 20px;
-            cursor: default;
+            margin-bottom: 45px;
             z-index: 10;
         }
 
-        .book-cover {
+        .book-wrap {
             width: 100%;
-            height: 190px;
-            background-color: #fff;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .book-inside {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 96%;
+            height: 98%;
+            background: #fff;
+            box-shadow: inset 5px 0 10px rgba(0,0,0,0.1);
+            border-radius: 0 4px 4px 0;
+            z-index: 1;
+            transform: translateZ(-1px);
+        }
+
+        .book-cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-size: cover;
             background-position: center;
             border-radius: 2px 8px 8px 2px;
-            box-shadow: 3px 5px 15px rgba(0,0,0,0.4);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 3px 5px 15px rgba(0,0,0,0.3);
+            z-index: 10;
             transform-origin: left;
-            position: relative;
-            z-index: 3;
-            border-left: 4px solid rgba(0,0,0,0.2);
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 5px solid rgba(0,0,0,0.2);
         }
 
-        .book-pages {
-            position: absolute;
-            top: 4px;
-            left: 5px;
-            width: 98%;
-            height: 182px;
-            background: #fff;
-            border-radius: 2px 8px 8px 2px;
-            z-index: 1;
-        }
+        .book-container:hover .book-cover { transform: rotateY(-110deg); box-shadow: -10px 10px 20px rgba(0,0,0,0.2); }
+        .book-container:hover .book-wrap { transform: translateX(20px); }
 
-        .book-container:hover .book-cover {
-            transform: rotateY(-25deg) scale(1.08);
-            box-shadow: 15px 10px 30px rgba(0,0,0,0.5);
-        }
-
-        /* Rótulo do Estudante - Estilo Placa de Madeira Clara ou Papel Antigo */
+        /* Efeito de Nome "Pintado" ou Gravado com cor na Madeira */
         .student-label {
-            margin-top: 15px;
-            background: #efebe9;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: #3e2723;
+            position: absolute;
+            bottom: -60px;
+            left: -10px;
+            right: -10px;
+            padding: 4px;
+            font-size: 0.68rem;
+            font-weight: 800;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            
+            /* Cor de destaque: Creme/Bege para simular gravação preenchida */
+            color: #ece0d1;
+            
+            /* Sombra interna para parecer baixo relevo */
+            text-shadow: 
+                1px 1px 0px rgba(0, 0, 0, 0.6),
+                -0.5px -0.5px 0px rgba(255, 255, 255, 0.1);
+            
             display: flex;
             align-items: center;
             justify-content: center;
-            text-transform: uppercase;
-            line-height: 1.1;
-            min-height: 40px;
-            border-bottom: 3px solid #d7ccc8;
-        }
-
-        footer {
-            background: #efebe9;
-            border-top: 5px solid #d7ccc8;
+            min-height: 48px;
+            line-height: 1.2;
+            pointer-events: none;
+            opacity: 0.95;
+            font-family: 'Quicksand', sans-serif;
         }
 
         @media (max-width: 640px) {
-            .shelf-row {
-                grid-template-columns: repeat(2, 1fr);
-                padding: 30px 10px 20px 10px;
-            }
+            .shelf-row { grid-template-columns: repeat(2, 1fr); }
             .banner h1 { font-size: 2.2rem; }
         }
     </style>
@@ -254,12 +288,27 @@
 
     <!-- Seletor de Turma Inicial -->
     <div id="class-selector">
-        <div class="text-center">
+        <div class="text-center w-full px-4" id="books-selection-wrapper">
             <h2 class="font-bold text-4xl mb-12 text-white" style="font-family: 'Cherry Bomb One'">Escolha a Turma</h2>
-            <div class="flex flex-wrap justify-center">
-                <div class="class-circle" onclick="selectClass('5ºA')"><span>Turma</span><span>5ºA</span></div>
-                <div class="class-circle" onclick="selectClass('5ºB')"><span>Turma</span><span>5ºB</span></div>
-                <div class="class-circle" onclick="selectClass('5ºC')"><span>Turma</span><span>5ºC</span></div>
+            <div class="flex flex-wrap justify-center gap-4 sm:gap-12">
+                <div class="class-book-item" onclick="animateZoom(this, '5ºA')">
+                    <div class="red-book-custom">
+                        <span class="red-book-title">5ºA</span>
+                        <span class="red-book-subtitle">TURMA</span>
+                    </div>
+                </div>
+                <div class="class-book-item" onclick="animateZoom(this, '5ºB')">
+                    <div class="red-book-custom">
+                        <span class="red-book-title">5ºB</span>
+                        <span class="red-book-subtitle">TURMA</span>
+                    </div>
+                </div>
+                <div class="class-book-item" onclick="animateZoom(this, '5ºC')">
+                    <div class="red-book-custom">
+                        <span class="red-book-title">5ºC</span>
+                        <span class="red-book-subtitle">TURMA</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -273,7 +322,7 @@
         </p>
     </header>
 
-    <!-- Área Principal da Estante -->
+    <!-- Estante Principal -->
     <main class="library-container" id="shelf-manager"></main>
 
     <footer class="text-center py-12 text-amber-900/60 font-bold">
@@ -284,47 +333,42 @@
         const ozCover = 'https://lh3.googleusercontent.com/d/1nEdtoMa2uNyQ7cxL6R21oySfKWBuRqQJ';
         
         const studentsByClass = {
-            '5ºA': [
-                "ALÍCIA CALIXTO FALQUEIRO", "ANGELO BRUGINSKI SCUDERI", "ARTHUR KENJI NAKAGAWA",
-                "BERNARDO CHRISTIAN RIBEIRO FREIRE", "CAROLINA DE QUEIROZ MOREIRA", "CECÍLIA LEONEL NALESSO",
-                "DANIEL SALVARANI GUARINHO", "EDUARDO FANTAZZINI GRANDISOLI", "EMI SAKIHAMA",
-                "FERNANDA AKARI KIMURA", "GAEL FARHA CONDE", "GUSTAVO DE SOUZA SAMPAIO",
-                "GUSTAVO SILVA E SOUZA", "HELENA HERINGER ROCHA SAD", "HELOISA ROSA DE SOUZA BARRETO",
-                "JÚLIA ROSÁTI SILVA", "LORENA DE CARVALHO SALLES", "LORENZO AMARAL FURIGO CARDOSO",
-                "LUCAS CASTELLI ALBUQUERQUE", "LUCAS OLIVEIRA MAIA", "LUCAS TADEU MUNIZ DA SILVA",
-                "LUIZA BELLOTTO BARRETTO", "MARINA SARTORETO FERNANDES", "PEDRO RIBEIRO DE OLIVEIRA",
-                "RAFAEL WATANABE SOUZA BARBIERI", "RAFAELLA MUOIO POLIDO", "THEO BRITO SEGAMARCHI"
-            ],
-            '5ºB': [
-                "ALICE BELLUCCI ASCENCIO", "ALICE DE FREITAS OLHIER", "ANTONELLA JULIO VETTORAZZO CHIESA REY",
-                "ARTHUR CORDEIRO PIZA", "BERNARDO VENTURA SÃO PIETRO", "CAROLINA SAES RUIZ",
-                "CATARINA MARQUES RAMOS", "CECÍLIA ZAN BARROSO", "EDUARDO FRANCO TOLEDO PINTO",
-                "ENZO ANDRADE ALVES", "FELIPE GUIMARÃES DE SOUZA", "GABRIEL YUZUI VICECONTI",
-                "GIOVANI DIEZEL MUNHOZ", "GIULIA REZENDE PASSOS", "ISABELA AGOSTINELI TRIDAPALLI",
-                "ISABELLA BOAVENTURA GOMES DA SILVA OLIVEIRA", "LARISSA DAMASCENO BRUDER SANTINI",
-                "LÍVIA MASCARENHAS BEDULLI", "LORENZO ATTIÊ BRUNI", "LUCAS BERNARDO MATUTINO DE OLIVEIRA",
-                "MARCELLA TARABORELLI LIMONGELLI", "MARCELO SOUZA VARCA", "MARCUS MIGUEL CORDEIRO DE MORAES",
-                "MARIA EDUARDA LEMOS LIMA", "MARIAH ANTONELLA MACIEL MAESTÁ", "MATEUS CARVALHO MADEIRA",
-                "MATHEUS DA SILVA VACCARO", "PEDRO CAMPOS VIZCARRA ZUNIGA"
-            ],
-            '5ºC': [
-                "ALICE VIEIRA ESTEVES", "BEATRIZ PAZINI SOARES", "BERNARDO MICHELETTI FRANCISCO",
-                "CECÍLIA SALCEDO FERNANDES", "CLARA COSTA RIBAS FRAMIL SANCHES", "DAVI CARVALHO DE VASCONCELOS",
-                "ENRICO FESTINO MARTORELLI", "GABRIEL MAMEDE DE ALMEIDA FERREIRA", "GABRIEL RIBEIRO DA SILVA",
-                "GIOVANNA DA SILVA PRESTES", "GIOVANNA LA TORRE MARTINS", "GIULIA VIEIRA SACCOMANO",
-                "JOÃO LUCCA SANTI SILVA", "JOSÉ FORTE PESSOA JUNIOR", "LAURA AGRA DE MORAES",
-                "LEONARDO DA SILVA CORRÊA", "LORENA MIDLEY PAULETTI", "LUIZA HIGUCHI ROSA",
-                "MARI UEDA POSSATO VENANCIO", "MARIA FERNANDA RUIVO ALBIERO", "MARIA LÚCIA LODI PALHARES",
-                "MATHEUS BORGES GARRIDO", "MATHEUS CARDOSO LICHMANN", "PEDRO DOS SANTOS FREITAS",
-                "RAFAEL DE BARROS VICENTIN", "RAFAELA RAMALHO GUIRELI", "STELLA HOFFMANN FOGAÇA",
-                "VALENTINA PALEARI CASSIMIRO", "VÍTOR HENRIQUE MARTINS DE PAULO"
-            ]
+            '5ºA': ["ALÍCIA CALIXTO FALQUEIRO", "ANGELO BRUGINSKI SCUDERI", "ARTHUR KENJI NAKAGAWA", "BERNARDO CHRISTIAN RIBEIRO FREIRE", "CAROLINA DE QUEIROZ MOREIRA", "CECÍLIA LEONEL NALESSO", "DANIEL SALVARANI GUARINHO", "EDUARDO FANTAZZINI GRANDISOLI", "EMI SAKIHAMA", "FERNANDA AKARI KIMURA", "GAEL FARHA CONDE", "GUSTAVO DE SOUZA SAMPAIO", "GUSTAVO SILVA E SOUZA", "HELENA HERINGER ROCHA SAD", "HELOISA ROSA DE SOUZA BARRETO", "JÚLIA ROSÁTI SILVA", "LORENA DE CARVALHO SALLES", "LORENZO AMARAL FURIGO CARDOSO", "LUCAS CASTELLI ALBUQUERQUE", "LUCAS OLIVEIRA MAIA", "LUCAS TADEU MUNIZ DA SILVA", "LUIZA BELLOTTO BARRETTO", "MARINA SARTORETO FERNANDES", "PEDRO RIBEIRO DE OLIVEIRA", "RAFAEL WATANABE SOUZA BARBIERI", "RAFAELLA MUOIO POLIDO", "THEO BRITO SEGAMARCHI"],
+            '5ºB': ["ALICE BELLUCCI ASCENCIO", "ALICE DE FREITAS OLHIER", "ANTONELLA JULIO VETTORAZZO CHIESA REY", "ARTHUR CORDEIRO PIZA", "BERNARDO VENTURA SÃO PIETRO", "CAROLINA SAES RUIZ", "CATARINA MARQUES RAMOS", "CECÍLIA ZAN BARROSO", "EDUARDO FRANCO TOLEDO PINTO", "ENZO ANDRADE ALVES", "FELIPE GUIMARÃES DE SOUZA", "GABRIEL YUZUI VICECONTI", "GIOVANI DIEZEL MUNHOZ", "GIULIA REZENDE PASSOS", "ISABELA AGOSTINELI TRIDAPALLI", "ISABELLA BOAVENTURA GOMES DA SILVA OLIVEIRA", "LARISSA DAMASCENO BRUDER SANTINI", "LÍVIA MAXCARENHAS BEDULLI", "LORENZO ATTIÊ BRUNI", "LUCAS BERNARDO MATUTINO DE OLIVEIRA", "MARCELLA TARABORELLI LIMONGELLI", "MARCELO SOUZA VARCA", "MARCUS MIGUEL CORDEIRO DE MORAES", "MARIA EDUARDA LEMOS LIMA", "MARIAH ANTONELLA MACIEL MAESTÁ", "MATEUS CARVALHO MADEIRA", "MATHEUS DA SILVA VACCARO", "PEDRO CAMPOS VIZCARRA ZUNIGA"],
+            '5ºC': ["ALICE VIEIRA ESTEVES", "BEATRIZ PAZINI SOARES", "BERNARDO MICHELETTI FRANCISCO", "CECÍLIA SALCEDO FERNANDES", "CLARA COSTA RIBAS FRAMIL SANCHES", "DAVI CARVALHO DE VASCONCELOS", "ENRICO FESTINO MARTORELLI", "GABRIEL MAMEDE DE ALMEIDA FERREIRA", "GABRIEL RIBEIRO DA SILVA", "GIOVANNA DA SILVA PRESTES", "GIOVANNA LA TORRE MARTINS", "GIULIA VIEIRA SACCOMANO", "JOÃO LUCCA SANTI SILVA", "JOSÉ FORTE PESSOA JUNIOR", "LAURA AGRA DE MORAES", "LEONARDO DA SILVA CORRÊA", "LORENA MIDLEY PAULETTI", "LUIZA HIGUCHI ROSA", "MARI UEDA POSSATO VENANCIO", "MARIA FERNANDA RUIVO ALBIERO", "MARIA LÚCIA LODI PALHARES", "MATHEUS BORGES GARRIDO", "MATHEUS CARDOSO LICHMANN", "PEDRO DOS SANTOS FREITAS", "RAFAEL DE BARROS VICENTIN", "RAFAELA RAMALHO GUIRELI", "STELLA HOFFMANN FOGAÇA", "VALENTINA PALEARI CASSIMIRO", "VÍTOR HENRIQUE MARTINS DE PAULO"]
         };
+
+        function animateZoom(element, className) {
+            const rect = element.getBoundingClientRect();
+            const clone = element.cloneNode(true);
+            
+            clone.style.position = 'fixed';
+            clone.style.top = rect.top + 'px';
+            clone.style.left = rect.left + 'px';
+            clone.style.width = rect.width + 'px';
+            clone.style.height = rect.height + 'px';
+            clone.style.margin = '0';
+            clone.style.zIndex = '5000';
+            clone.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            document.body.appendChild(clone);
+            
+            requestAnimationFrame(() => {
+                clone.classList.add('zooming-wrap');
+                document.getElementById('class-selector').style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                selectClass(className);
+                document.body.removeChild(clone);
+                document.getElementById('class-selector').style.display = 'none';
+                document.querySelector('.library-container').classList.add('visible');
+            }, 800);
+        }
 
         function initLibrary(className) {
             const container = document.getElementById('shelf-manager');
             container.innerHTML = '';
-            
             const students = studentsByClass[className] || [];
             const booksPerRow = 5;
             const rowsCount = Math.ceil(students.length / booksPerRow);
@@ -332,19 +376,17 @@
             for (let i = 0; i < rowsCount; i++) {
                 const shelf = document.createElement('div');
                 shelf.className = 'shelf-row';
-                
                 for (let j = 0; j < booksPerRow; j++) {
                     const studentIndex = (i * booksPerRow) + j;
                     if (studentIndex >= students.length) break;
-
                     const studentName = students[studentIndex];
-                    
                     const bookContainer = document.createElement('div');
                     bookContainer.className = 'book-container';
-                    
                     bookContainer.innerHTML = `
-                        <div class="book-pages"></div>
-                        <div class="book-cover" style="background-image: url('${ozCover}')"></div>
+                        <div class="book-wrap">
+                            <div class="book-inside"></div>
+                            <div class="book-cover" style="background-image: url('${ozCover}')"></div>
+                        </div>
                         <span class="student-label">${studentName}</span>
                     `;
                     shelf.appendChild(bookContainer);
@@ -365,23 +407,17 @@
             const selector = document.getElementById('class-selector');
             selector.style.display = 'flex';
             selector.style.opacity = '1';
+            document.querySelector('.library-container').classList.remove('visible');
             document.body.classList.add('overflow-hidden');
         }
 
         function selectClass(className) {
             document.getElementById('display-class').innerText = className;
-            const selector = document.getElementById('class-selector');
-            selector.style.opacity = '0';
-            setTimeout(() => {
-                selector.style.display = 'none';
-                document.body.classList.remove('overflow-hidden');
-            }, 500);
+            document.body.classList.remove('overflow-hidden');
             initLibrary(className);
         }
 
-        window.onload = () => {
-            document.body.classList.add('overflow-hidden');
-        };
+        window.onload = () => { document.body.classList.add('overflow-hidden'); };
     </script>
 </body>
 </html>
