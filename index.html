@@ -207,7 +207,7 @@
             position: absolute;
             bottom: 20px;
             right: 20px;
-            background: rgba(180, 83, 9, 0.9); /* amber-700 */
+            background: rgba(180, 83, 9, 0.9);
             color: white;
             padding: 10px;
             border-radius: 50%;
@@ -245,7 +245,7 @@
             cursor: zoom-out;
         }
 
-        /* Botão apenas com a seta, flutuando no canto superior esquerdo */
+        /* Botão apenas com a seta */
         .back-to-shelf-btn {
             position: fixed;
             top: 25px;
@@ -308,9 +308,6 @@
             .shelf-row { grid-template-columns: repeat(3, 1fr); padding: 30px 15px 70px 15px; }
             .footer-content { flex-direction: column; gap: 20px; text-align: center; }
             .library-wrapper { padding: 0 10px; }
-            .banner { height: auto; padding: 40px 20px; }
-            .banner-content { flex-direction: column; gap: 30px; }
-            .banner-logo-placeholder { display: none; }
             .back-to-shelf-btn { top: 15px; left: 15px; width: 40px; height: 40px; }
         }
     </style>
@@ -364,7 +361,6 @@
                 <div class="page-base page-right">
                     <div class="work-image-container" onclick="openZoom(document.getElementById('work-img').src)">
                         <img id="work-img" src="" class="work-image" alt="Poema do Aluno">
-                        <!-- Ícone de Lupa -->
                         <div class="zoom-indicator">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
@@ -392,23 +388,16 @@
     <!-- Banner Superior -->
     <header class="banner h-[300px] bg-amber-900 text-white relative shadow-xl border-b-8 border-[#2d1b18] flex items-center px-8 overflow-hidden">
         <div class="absolute inset-0 opacity-40 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/d/1hm2VI0Mr65rQhvowKYC2jcFE3-KR5EoF')"></div>
-        
         <div class="relative z-10 w-full flex items-center justify-between max-w-7xl mx-auto banner-content">
-            <div class="flex-shrink-0">
-                <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="w-24 h-auto filter brightness-0 invert" alt="Logo Colégio">
-            </div>
-
+            <div class="flex-shrink-0"><img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="w-24 h-auto filter brightness-0 invert" alt="Logo Colégio"></div>
             <div class="text-center flex-grow px-4">
                 <h1 class="text-6xl font-bold leading-tight" style="font-family: 'Cherry Bomb One'; text-shadow: 4px 4px 0px #3e2723;">Estante Virtual</h1>
                 <div class="flex flex-col items-center mt-2">
                     <div class="w-24 h-1 bg-amber-500/50 mb-3 rounded-full"></div>
-                    <p class="bg-amber-800/90 border border-amber-600/50 px-8 py-2 rounded-full text-sm font-bold tracking-[0.2em] uppercase shadow-lg">
-                        Mágico de Oz • Campolim • <span id="current-class-label"></span>
-                    </p>
+                    <p class="bg-amber-800/90 border border-amber-600/50 px-8 py-2 rounded-full text-sm font-bold tracking-[0.2em] uppercase shadow-lg">Mágico de Oz • Campolim • <span id="current-class-label"></span></p>
                 </div>
             </div>
-
-            <div class="flex-shrink-0 w-24 banner-logo-placeholder"></div>
+            <div class="flex-shrink-0 w-24"></div>
         </div>
     </header>
 
@@ -434,14 +423,11 @@
         document.getElementById('footer-date').innerText = new Date().getFullYear();
 
         const mediaConfig = {
-            "ALÍCIA CALIXTO FALQUEIRO": { 
-                work: "https://lh3.googleusercontent.com/d/1MYXVZ2T4t2XEyFYcOS5pcCBkTIR_mSGT" 
-            },
-            "ANGELO BRUGINSKI SCUDERI": { work: ozCover }
+            "ALÍCIA CALIXTO FALQUEIRO": { work: "https://lh3.googleusercontent.com/d/1MYXVZ2T4t2XEyFYcOS5pcCBkTIR_mSGT" }
         };
         
         const studentsData = {
-            '5ºA': ["ALÍCIA CALIXTO FALQUEIRO", "ANGELO BRUGINSKI SCUDERI", "ARTHUR KENJI NAKAGAWA", "BERNARDO CHRISTIAN RIBEIRO FREIRE", "CAROLINA DE QUEIROZ MOREIRA", "CECÍLIA LEONEL NALESSO", "DANIEL SALVARANI GUARINHO", "EDUARDO FANTAZZINI GRANDISOLI", "EMI SAKIHAMA", "FERNANDA AKARI KIMURA", "GAEL FARHA CONDE", "GUSTAVO DE SOUZA SAMPAIO", "GUSTAVO SILVA E SOUZA", "HELENA HERINGER ROCHA SAD", "HELOISA ROSA DE SOUZA BARRETO", "JÚLIA ROSÁTI SILVA", "LORENA DE CARVALHO SALLES", "LORENZO AMARAL FURIGO CARDOSO", "LUCAS CASTELLI ALBUQUERQUE", "LUCAS OLIVEIRA MAIA", "LUCAS TADEU MUNIZ DA SILVA", "LUIZA BELLOTTO BARRETTO", "MARINA SARTORETO FERNANDES", "PEDRO RIBEIRO DE OLIVEIRA", "RAFAEL WATANABE SOUZA BARBIERI", "RAFAELLA MUOIO POLIDO", "THEO BRITO SEGAMARCHI"],
+            '5ºA': ["ALÍCIA CALIXTO FALQUEIRO", "ANGELO BRUGINSKI SCUDERI", "ARTHUR KENJI NAKAGAWA", "BERNARDO CHRISTIAN RIBEIRO FREIRE", "CAROLINA DE QUEIROZ MOREIRA", "CECÍLIA LEONEL NALESSO", "DANIEL SALVARANI GUARINHO", "EDUARDO FANTAZZINI GRANDISOLI", "EMI SAKIHAMA", "FERNANDA AKARI KIMURA", "GAEL FARHA CONDE", "GUSTAVO DE SOUZA SAMPAIO", "GUSTAVO SILVA E SOUZA", "HELENA HERINGER ROCHA SAD", "HELOISA ROSA DE SOUZA BARRETO", "JÚLIA ROSÁTI SILVA", "LORENA DE CARVALHO SALLES", "LORENZO AMARAL FURIGO CARDOSO", "LUCAS CASTELLI ALBUQUERQUE", "LUCAS OLIVEIRA MAIA", "LUCAS TADEU MUNIZ DA SILVA", "LUIZA BELLOTTO BARRETTO", "MARINA SARTORETO FERNANDES", "PEDRO RIBEIRO DE OLIVEIRA", "RAFAEL WATANABE SOUZA BARBIERI", "RAFAELLA MUOIO POLIDO", "SCARLETT GRACE LIMA CUSTODIO", "THEO BRITO SEGAMARCHI"],
             '5ºB': ["ALICE BELLUCCI ASCENCIO", "ALICE DE FREITAS OLHIER", "ANTONELLA JULIO VETTORAZZO CHIESA REY", "ARTHUR CORDEIRO PIZA", "BERNARDO VENTURA SÃO PIETRO", "CAROLINA SAES RUIZ", "CATARINA MARQUES RAMOS", "CECÍLIA ZAN BARROSO", "EDUARDO FRANCO TOLEDO PINTO", "ENZO ANDRADE ALVES", "FELIPE GUIMARÃES DE SOUZA", "GABRIEL YUZUI VICECONTI", "GIOVANI DIEZEL MUNHOZ", "GIULIA REZENDE PASSOS", "ISABELA AGOSTINELI TRIDAPALLI", "ISABELLA BOAVENTURA GOMES DA SILVA OLIVEIRA", "LARISSA DAMASCENO BRUDER SANTINI", "LÍVIA MAXCARENHAS BEDULLI", "LORENZO ATTIÊ BRUNI", "LUCAS BERNARDO MATUTINO DE OLIVEIRA", "MARCELLA TARABORELLI LIMONGELLI", "MARCELO SOUZA VARCA", "MARCUS MIGUEL CORDEIRO DE MORAES", "MARIA EDUARDA LEMOS LIMA", "MARIAH ANTONELLA MACIEL MAESTÁ", "MATEUS CARVALHO MADEIRA", "MATHEUS DA SILVA VACCARO", "PEDRO CAMPOS VIZCARRA ZUNIGA"],
             '5ºC': ["ALICE VIEIRA ESTEVES", "BEATRIZ PAZINI SOARES", "BERNARDO MICHELETTI FRANCISCO", "CECÍLIA SALCEDO FERNANDES", "CLARA COSTA RIBAS FRAMIL SANCHES", "DAVI CARVALHO DE VASCELOS", "ENRICO FESTINO MARTORELLI", "GABRIEL MAMEDE DE ALMEIDA FERREIRA", "GABRIEL RIBEIRO DA SILVA", "GIOVANNA DA SILVA PRESTES", "GIOVANNA LA TORRE MARTINS", "GIULIA VIEIRA SACCOMANO", "JOÃO LUCCA SANTI SILVA", "JOSÉ FORTE PESSOA JUNIOR", "LAURA AGRA DE MORAES", "LEONARDO DA SILVA CORRÊA", "LORENA MIDLEY PAULETTI", "LUIZA HIGUCHI ROSA", "MARI UEDA POSSATO VENANCIO", "MARIA FERNANDA RUIVO ALBIERO", "MARIA LÚCIA LODI PALHARES", "MATHEUS BORGES GARRIDO", "MATHEUS CARDOSO LICHMANN", "PEDRO DOS SANTOS FREITAS", "RAFAEL DE BARROS VICENTIN", "RAFAELA RAMALHO GUIRELI", "STELLA HOFFMANN FOGAÇA", "VALENTINA PALEARI CASSIMIRO", "VÍTOR HENRIQUE MARTINS DE PAULO"]
         };
@@ -481,7 +467,7 @@
         function renderShelf(className) {
             const container = document.getElementById('shelf-container');
             container.innerHTML = '';
-            const students = studentsData[className];
+            const students = studentsData[className].sort();
             const perRow = 5; 
             
             for(let i=0; i < students.length; i+=perRow) {
