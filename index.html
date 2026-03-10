@@ -59,7 +59,7 @@
         }
         .sidebar-item:hover { background: rgba(212, 175, 55, 0.1); border-color: #d4af37; color: #d4af37; }
 
-        /* Menu Icon */
+        /* Icone do Menu */
         .menu-icon {
             position: fixed; top: 25px; left: 25px; z-index: 4500;
             cursor: pointer; background: rgba(0,0,0,0.5); padding: 12px;
@@ -68,7 +68,7 @@
         }
         .menu-icon:hover { background: #d4af37; border-color: #fff; }
 
-        /* ESTANTE AMPLIADA HORIZONTALMENTE */
+        /* ESTANTE */
         .library-wrapper { 
             max-width: 1400px; 
             margin: 40px auto; 
@@ -98,7 +98,6 @@
             background-color: #4e342e;
         }
 
-        /* Sombra de profundidade da prateleira */
         .shelf-row::after {
             content: '';
             position: absolute;
@@ -110,7 +109,6 @@
             pointer-events: none;
         }
 
-        /* Livros ajustados */
         .book-item { width: 130px; height: 190px; position: relative; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0 auto; }
         .book-item:hover { transform: translateY(-25px) scale(1.1); z-index: 50; }
         
@@ -175,11 +173,101 @@
             width: 400px; height: 100%; background: #fdfaf3; padding: 30px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: inset 0 0 40px rgba(0,0,0,0.1);
+            position: relative;
         }
         .page-left { border-radius: 5px 0 0 5px; background: linear-gradient(to right, #e8dfcc, #fdfaf3 10%); border-right: 1px solid rgba(0,0,0,0.1); }
         .page-right { border-radius: 0 5px 5px 0; background: linear-gradient(to left, #e8dfcc, #fdfaf3 10%); }
 
-        .work-image { width: 100%; max-height: 80%; object-fit: contain; border: 10px solid white; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        /* Container da Imagem com Lupa */
+        .work-image-container {
+            position: relative;
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .work-image { 
+            width: 100%; 
+            max-height: 80%; 
+            object-fit: contain; 
+            border: 10px solid white; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2); 
+            cursor: zoom-in;
+            transition: 0.3s;
+        }
+        .work-image:hover {
+            transform: scale(1.02);
+            filter: brightness(1.05);
+        }
+
+        /* Estilo da Lupa */
+        .zoom-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(180, 83, 9, 0.9); /* amber-700 */
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid rgba(255,255,255,0.2);
+            animation: pulse-slow 2s infinite;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        /* ZOOM DA IMAGEM */
+        .image-zoom-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10001;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .zoomed-image {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border: 5px solid white;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            cursor: zoom-out;
+        }
+
+        /* Botão apenas com a seta, flutuando no canto superior esquerdo */
+        .back-to-shelf-btn {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            background: #d4af37;
+            color: #2d1b18;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10002;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .back-to-shelf-btn:hover {
+            background: white;
+            transform: scale(1.1) rotate(-10deg);
+        }
 
         .close-btn {
             position: fixed; top: 30px; right: 30px; color: white; font-size: 1.5rem;
@@ -189,7 +277,6 @@
         }
         .close-btn:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
 
-        /* Rodapé Reconfigurado */
         footer {
             background-color: #2d1b18;
             color: #d4af37;
@@ -224,10 +311,22 @@
             .banner { height: auto; padding: 40px 20px; }
             .banner-content { flex-direction: column; gap: 30px; }
             .banner-logo-placeholder { display: none; }
+            .back-to-shelf-btn { top: 15px; left: 15px; width: 40px; height: 40px; }
         }
     </style>
 </head>
 <body class="overflow-hidden">
+
+    <!-- Overlay de Zoom -->
+    <div id="zoom-overlay" class="image-zoom-overlay">
+        <img id="zoomed-img-content" class="zoomed-image" src="" alt="Imagem Ampliada" onclick="closeZoom()">
+        <!-- Botão Minimalista: Apenas Seta -->
+        <div class="back-to-shelf-btn" onclick="returnToShelf()" title="Voltar para a Estante">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+        </div>
+    </div>
 
     <!-- Menu Lateral -->
     <div id="sidebar-overlay" onclick="closeSidebar()"></div>
@@ -248,8 +347,8 @@
     <!-- Modal do Livro -->
     <div id="book-modal">
         <div class="close-btn" onclick="closeBook()">✕</div>
-        <div class="book-container" id="book-element" onclick="toggleBookOpen(event)">
-            <div class="cover-main" id="modal-cover-front">
+        <div class="book-container" id="book-element">
+            <div class="cover-main" id="modal-cover-front" onclick="toggleBookOpen(event)">
                 <div class="main-title-gold text-[#d4af37] text-lg tracking-[4px]" style="font-family: 'Cinzel'">MÁGICO DE OZ</div>
                 <div id="cover-name-text" class="main-name-gold text-[#f3e5ab] text-3xl font-bold" style="font-family: 'Playfair Display'"></div>
                 <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="w-16 h-auto mb-4 filter brightness-0 invert" alt="Logo">
@@ -263,7 +362,16 @@
                     <p class="text-amber-800 italic text-sm text-center">"Não há lugar como o nosso lar."</p>
                 </div>
                 <div class="page-base page-right">
-                    <img id="work-img" src="" class="work-image" alt="Trabalho">
+                    <div class="work-image-container" onclick="openZoom(document.getElementById('work-img').src)">
+                        <img id="work-img" src="" class="work-image" alt="Poema do Aluno">
+                        <!-- Ícone de Lupa -->
+                        <div class="zoom-indicator">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-amber-600 mt-4 uppercase tracking-widest font-bold">Clique no poema para ampliar</p>
                 </div>
             </div>
         </div>
@@ -281,17 +389,15 @@
         </div>
     </div>
 
-    <!-- Banner Superior (Logotipo TE removido) -->
+    <!-- Banner Superior -->
     <header class="banner h-[300px] bg-amber-900 text-white relative shadow-xl border-b-8 border-[#2d1b18] flex items-center px-8 overflow-hidden">
         <div class="absolute inset-0 opacity-40 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/d/1hm2VI0Mr65rQhvowKYC2jcFE3-KR5EoF')"></div>
         
         <div class="relative z-10 w-full flex items-center justify-between max-w-7xl mx-auto banner-content">
-            <!-- Logo Esquerda -->
             <div class="flex-shrink-0">
                 <img src="https://lh3.googleusercontent.com/d/15x27AzxW9GANulDbLrYlqzRC6obRAXMI" class="w-24 h-auto filter brightness-0 invert" alt="Logo Colégio">
             </div>
 
-            <!-- Títulos Centralizados -->
             <div class="text-center flex-grow px-4">
                 <h1 class="text-6xl font-bold leading-tight" style="font-family: 'Cherry Bomb One'; text-shadow: 4px 4px 0px #3e2723;">Estante Virtual</h1>
                 <div class="flex flex-col items-center mt-2">
@@ -302,7 +408,6 @@
                 </div>
             </div>
 
-            <!-- Espaçador à direita para manter o equilíbrio do alinhamento central -->
             <div class="flex-shrink-0 w-24 banner-logo-placeholder"></div>
         </div>
     </header>
@@ -312,11 +417,9 @@
         <div class="bookcase" id="shelf-container"></div>
     </div>
 
-    <!-- Rodapé -->
     <footer>
         <div class="footer-content">
             <img src="https://lh3.googleusercontent.com/d/1E49ixG8NWq1CestH_lJJiPxTFzyZT3xb" class="footer-logo" alt="Logo TE Rodapé">
-            
             <div class="text-right">
                 <p class="text-lg font-bold uppercase tracking-[3px]" style="font-family: 'Cinzel'">Colégio Ser</p>
                 <p class="text-[10px] opacity-60 uppercase tracking-widest mb-2">Unidade Campolim</p>
@@ -331,7 +434,9 @@
         document.getElementById('footer-date').innerText = new Date().getFullYear();
 
         const mediaConfig = {
-            "ALÍCIA CALIXTO FALQUEIRO": { work: "https://lh3.googleusercontent.com/d/19J-aT4ekQ9btD-mcWC7SBWGzY6ioe927" },
+            "ALÍCIA CALIXTO FALQUEIRO": { 
+                work: "https://lh3.googleusercontent.com/d/1MYXVZ2T4t2XEyFYcOS5pcCBkTIR_mSGT" 
+            },
             "ANGELO BRUGINSKI SCUDERI": { work: ozCover }
         };
         
@@ -425,6 +530,33 @@
             book.classList.remove('open');
             book.style.transform = "rotateX(5deg)";
             setTimeout(() => { document.getElementById('book-modal').style.display = 'none'; }, 850);
+        }
+
+        function openZoom(src) {
+            const overlay = document.getElementById('zoom-overlay');
+            const zoomImg = document.getElementById('zoomed-img-content');
+            zoomImg.src = src;
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeZoom() {
+            document.getElementById('zoom-overlay').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function returnToShelf() {
+            closeZoom();
+            closeBook();
+            setTimeout(() => {
+                const shelf = document.getElementById('lib-view');
+                if (shelf) {
+                    window.scrollTo({
+                        top: shelf.offsetTop - 50,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 300);
         }
     </script>
 </body>
