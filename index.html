@@ -386,6 +386,16 @@
                         <h2 id="inner-student-name" class="text-3xl font-classic font-bold text-[#3e2723] mb-6 text-center px-4 leading-tight"></h2>
                         <div class="w-16 h-[2px] bg-[var(--gold)] mb-8"></div>
                         <p class="font-classic italic text-[#5d4037] text-lg text-center px-8">"Não há lugar como o nosso lar."</p>
+                        
+                        <!-- Novo Botão e Player de Áudio -->
+                        <div id="audio-container" class="mt-8 hidden flex-col items-center">
+                            <button id="play-audio-btn" class="btn-circle bg-[var(--gold)] text-white hover:bg-[var(--magic-red)] shadow-lg !border-none transition-all duration-300" onclick="toggleAudio(event)" title="Ouvir Poema">
+                                <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            <p class="text-[10px] text-[#8b0000] mt-3 uppercase tracking-[2px] font-bold opacity-80">Ouvir Poema</p>
+                            <audio id="student-audio" src="" onended="resetAudioUI()"></audio>
+                        </div>
                     </div>
                 </div>
                 
@@ -460,7 +470,10 @@
 
         // Configuração de trabalhos específicos
         const mediaConfig = {
-            "ALÍCIA CALIXTO FALQUEIRO": { work: "https://lh3.googleusercontent.com/d/1MYXVZ2T4t2XEyFYcOS5pcCBkTIR_mSGT" }
+            "ALÍCIA CALIXTO FALQUEIRO": { 
+                work: "https://lh3.googleusercontent.com/d/1MYXVZ2T4t2XEyFYcOS5pcCBkTIR_mSGT",
+                audio: "https://drive.google.com/uc?export=download&id=1IGmY5kvVT54r7dx28D1rac3r8RZned05"
+            }
         };
         
         // Base de Dados dos Alunos (Incluindo Scarlett Grace Lima Custodio no 5ºA)
@@ -551,13 +564,28 @@
             const modal = document.getElementById('book-modal');
             const book = document.getElementById('book-element');
             const img = document.getElementById('work-img');
+            const audioContainer = document.getElementById('audio-container');
+            const audioEl = document.getElementById('student-audio');
             
             // Preencher dados
             document.getElementById('cover-name-text').innerText = name;
             document.getElementById('inner-student-name').innerText = name;
             
             const config = mediaConfig[name];
-            img.src = config ? config.work : defaultCover;
+            img.src = config && config.work ? config.work : defaultCover;
+            
+            // Configurar Áudio se existir
+            if (config && config.audio) {
+                audioEl.src = config.audio;
+                audioContainer.classList.remove('hidden');
+                audioContainer.classList.add('flex');
+                resetAudioUI(); // Garante que o ícone é o de Play
+            } else {
+                audioEl.removeAttribute('src');
+                audioEl.load(); // Limpa a fonte do áudio adequadamente para evitar NotSupportedError
+                audioContainer.classList.add('hidden');
+                audioContainer.classList.remove('flex');
+            }
             
             // Resetar estado do livro e exibir
             book.classList.remove('open');
@@ -583,9 +611,59 @@
             book.classList.remove('open');
             book.style.transform = "rotateX(5deg) scale(0.9)";
             
+            // Parar o áudio ao fechar o livro
+            const audioEl = document.getElementById('student-audio');
+            if (audioEl) {
+                audioEl.pause();
+                try {
+                    // Previne erros ao tentar resetar tempo de um áudio sem fonte
+                    if (audioEl.hasAttribute('src')) {
+                        audioEl.currentTime = 0;
+                    }
+                } catch(e) {
+                    console.warn("Não foi possível reiniciar o tempo do áudio", e);
+                }
+            }
+            
             setTimeout(() => { 
                 document.getElementById('book-modal').style.display = 'none'; 
             }, 600);
+        }
+
+        // --- FUNÇÕES DE ÁUDIO ---
+        function toggleAudio(e) {
+            if(e) e.stopPropagation();
+            const audioEl = document.getElementById('student-audio');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            
+            if (audioEl.paused) {
+                const playPromise = audioEl.play();
+                
+                // Tratamento de Promise para evitar UNHANDLEDREJECTION
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        playIcon.classList.add('hidden');
+                        pauseIcon.classList.remove('hidden');
+                    }).catch(error => {
+                        console.error("Erro na reprodução de áudio:", error);
+                        alert("Não foi possível reproduzir o áudio. O ficheiro pode não ser suportado ou o Google Drive está a bloquear o acesso direto.");
+                        resetAudioUI();
+                    });
+                }
+            } else {
+                audioEl.pause();
+                resetAudioUI();
+            }
+        }
+
+        function resetAudioUI() {
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            if (playIcon && pauseIcon) {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            }
         }
 
         // Funções de Zoom
