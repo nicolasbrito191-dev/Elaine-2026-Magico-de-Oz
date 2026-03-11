@@ -117,7 +117,7 @@
 
         /* --- ESTANTE --- */
         .library-wrapper { 
-            max-width: 1600px; width: 95%; margin: -50px auto 60px; padding: 0 20px; 
+            max-width: 1400px; margin: -50px auto 60px; padding: 0 20px; 
             opacity: 0; transform: translateY(30px); transition: 1s ease-out; 
             flex-grow: 1; position: relative; z-index: 20;
         }
@@ -134,7 +134,7 @@
 
         .shelf-row {
             padding: 40px 30px 60px 30px; 
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 40px 40px;
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 40px 60px;
             border-bottom: 25px solid var(--wood-dark); 
             position: relative;
             background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 20%);
@@ -521,8 +521,8 @@
             container.innerHTML = '';
             const students = studentsData[className].sort();
             
-            // Reduzimos o limite para garantir 5 livros mesmo na janela de pré-visualização
-            const booksPerRow = window.innerWidth > 600 ? 5 : 3;
+            // Ajustado para mostrar exatamente 5 livros por prateleira em ecrãs maiores
+            const booksPerRow = window.innerWidth > 900 ? 5 : 3;
             
             for(let i=0; i < students.length; i += booksPerRow) {
                 const row = document.createElement('div');
